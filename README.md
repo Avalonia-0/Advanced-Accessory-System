@@ -24,5 +24,5 @@
  - 其他饰品模组的兼容性未知
  - 无需前置
 ---
-这个模组为整合包Vanilla Creamy Exploration 1而写。因为我基本不代码和懂模组开发，所以不少工作是由ChatGPT完成的。也许不会迁移到其他版本。  
+这个模组为整合包Vanilla Creamy Exploration 1而写。因为我基本不懂代码和模组开发，所以不少工作是由ChatGPT完成的。也许不会迁移到其他版本。  
 遵循MIT协议使用
