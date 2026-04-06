@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "advanced-accessory-system",
+  "version": "${version}",
+  "name": "Advanced Accessory System",
+  "description": "Allows non-standard items to be placed in the player helmet slot, with optional Cosmetic Armor compatibility.",
+  "authors": [
+    "Alonie"
+  ],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/advanced-accessory-system/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.alonie.advancedaccessorysystem.AdvancedAccessorySystemMod"
+    ],
+    "client": [
+      "com.alonie.advancedaccessorysystem.client.AdvancedAccessorySystemClient"
+    ]
+  },
+  "mixins": [
+    "advanced-accessory-system.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "trinkets": "*",
+    "cosmeticarmor": "*"
+  }
+}

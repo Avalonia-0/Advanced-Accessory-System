@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "package": "com.alonie.advancedaccessorysystem.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "advanced-accessory-system.refmap.json",
+  "mixins": [
+    "PlayerScreenHandlerHeadSlotMixin",
+    "ScreenHandlerHeadWearClickMixin",
+    "shared.EntityRidePlayerMixin",
+    "shared.RideCommandMixin",
+    "shared.EntityRideDebugMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "client.ArmorFeatureRendererArmorVisibilityMixin",
+    "client.HandledScreenAccessor",
+    "client.InventoryScreenArmorVisibilityMixin",
+    "client.ScreenInvoker"
+  ]
+}
