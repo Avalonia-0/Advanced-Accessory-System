@@ -4,11 +4,15 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "advanced-accessory-system.refmap.json",
   "mixins": [
-    "PlayerScreenHandlerHeadSlotMixin",
-    "ScreenHandlerHeadWearClickMixin",
-    "shared.EntityRidePlayerMixin",
-    "shared.RideCommandMixin",
-    "shared.EntityRideDebugMixin"
+    "headslot.PlayerScreenHandlerHeadSlotMixin",
+    "ride.PlayerEntityCriticalHitInvoker",
+    "ride.PlayerEntityRideAttackBlockMixin",
+    "ride.ServerPlayerEntityCriticalBoatBreakMixin",
+    "ride.ServerPlayNetworkHandlerPassengerDismountMixin",
+    "headslot.ScreenHandlerHeadWearClickMixin",
+    "ride.EntityPassengerHitboxMixin",
+    "ride.EntityRidePlayerMixin",
+    "ride.RideCommandMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -17,9 +21,8 @@
     "requireAnnotations": true
   },
   "client": [
-    "client.ArmorFeatureRendererArmorVisibilityMixin",
-    "client.HandledScreenAccessor",
-    "client.InventoryScreenArmorVisibilityMixin",
-    "client.ScreenInvoker"
+    "client.armorvisibility.ArmorFeatureRendererArmorVisibilityMixin",
+    "client.armorvisibility.EntityRenderManagerAccessor",
+    "client.armorvisibility.PlayerEntityRendererArmorVisibilityMixin"
   ]
 }
