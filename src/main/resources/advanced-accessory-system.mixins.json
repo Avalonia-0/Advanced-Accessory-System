@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "package": "com.alonie.advancedaccessorysystem.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "advanced-accessory-system.refmap.json",
+  "mixins": [
+    "headslot.PlayerScreenHandlerHeadSlotMixin",
+    "ride.PlayerEntityCriticalHitInvoker",
+    "ride.PlayerEntityRideAttackBlockMixin",
+    "ride.ServerPlayerEntityCriticalBoatBreakMixin",
+    "ride.ServerPlayNetworkHandlerPassengerDismountMixin",
+    "headslot.ScreenHandlerHeadWearClickMixin",
+    "ride.EntityPassengerHitboxMixin",
+    "ride.EntityRidePlayerMixin",
+    "ride.RideCommandMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "client.armorvisibility.ArmorFeatureRendererArmorVisibilityMixin",
+    "client.armorvisibility.EntityRenderManagerAccessor",
+    "client.armorvisibility.PlayerEntityRendererArmorVisibilityMixin"
+  ]
+}
