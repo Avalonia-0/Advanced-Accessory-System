@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.InteractionResult;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
-import java.util.function.BiFunction;
 
 /**
  * Configuration facade.
@@ -44,6 +44,10 @@ public final class AdvancedAccessorySystemConfigs {
     public static int chargeTime = 40;
 
     // ---- KeyMappings -------------------------------------------------------
+    // Note: Minecraft 1.21+ uses KeyMapping.Category enum (not string).
+    // The category's display name comes from its built-in translation key.
+    // Individual key names are i18n'd via language entries matching the
+    // first constructor argument (e.g. "key.advanced-accessory-system.openConfig").
 
     public static final KeyMapping openConfigHotkey = new KeyMapping(
             "key.advanced-accessory-system.openConfig",
@@ -53,7 +57,7 @@ public final class AdvancedAccessorySystemConfigs {
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, KeyMapping.Category.MISC);
     public static final KeyMapping dismountPassengersHotkey = new KeyMapping(
             "key.advanced-accessory-system.dismountPassengers",
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Q, KeyMapping.Category.MISC);
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KeyMapping.Category.MISC);
     public static final KeyMapping chargePassengerLaunchHotkey = new KeyMapping(
             "key.advanced-accessory-system.chargePassengerLaunch",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_SHIFT, KeyMapping.Category.MISC);
@@ -82,19 +86,19 @@ public final class AdvancedAccessorySystemConfigs {
                     "com.alonie.advancedaccessorysystem.client.config.AccessoryConfig");
             Class<?> serializerClass = Class.forName(
                     "me.shedaniel.autoconfig.serializer.GsonConfigSerializer");
-            Class<?> configDefClass = Class.forName(
-                    "me.shedaniel.autoconfig.util.ConfigDefinition");
+            Class<?> configAnnotationClass = Class.forName(
+                    "me.shedaniel.autoconfig.annotation.Config");
             Class<?> factoryInterface = Class.forName(
                     "me.shedaniel.autoconfig.serializer.ConfigSerializer$Factory");
 
-            // Create factory via Proxy to emulate GsonConfigSerializer::new method reference
-            Constructor<?> gsonCtor = serializerClass.getConstructor(configDefClass);
+            // Factory.create(Config annotation, Class<T>) matches GsonConfigSerializer(Config, Class)
+            Constructor<?> gsonCtor = serializerClass.getConstructor(configAnnotationClass, Class.class);
             Object factory = Proxy.newProxyInstance(
                     factoryInterface.getClassLoader(),
                     new Class<?>[]{factoryInterface},
                     (_proxy, method, args) -> {
-                        if ("create".equals(method.getName()) && args.length == 1) {
-                            return gsonCtor.newInstance(args[0]);
+                        if ("create".equals(method.getName()) && args.length == 2) {
+                            return gsonCtor.newInstance(args[0], args[1]);
                         }
                         throw new UnsupportedOperationException(method.getName());
                     });
@@ -103,15 +107,23 @@ public final class AdvancedAccessorySystemConfigs {
             var registerMethod = autoConfigClass.getMethod("register", Class.class, factoryInterface);
             clothHolder = registerMethod.invoke(null, configClass, factory);
 
-            // Register save listener — sync Cloth Config GUI changes to static fields on every save
+            // Register save listener — sync GUI changes to static fields on every save
             var getHolderMethod = autoConfigClass.getMethod("getConfigHolder", Class.class);
             Object holder = getHolderMethod.invoke(null, configClass);
-            var registerSaveListenerMethod = holder.getClass().getMethod("registerSaveListener",
-                    BiFunction.class);
-            BiFunction<Object, Object, Boolean> saveListener = (holder2, config) -> {
-                syncFromConfig(config);
-                return true;
-            };
+            Class<?> saveListenerClass = Class.forName(
+                    "me.shedaniel.autoconfig.event.ConfigSerializeEvent$Save");
+            var registerSaveListenerMethod = holder.getClass().getMethod(
+                    "registerSaveListener", saveListenerClass);
+            Object saveListener = Proxy.newProxyInstance(
+                    saveListenerClass.getClassLoader(),
+                    new Class<?>[]{saveListenerClass},
+                    (_proxy, method, args) -> {
+                        if ("onSave".equals(method.getName()) && args.length == 2) {
+                            syncFromConfig(args[1]); // args[1] is the config T
+                            return InteractionResult.SUCCESS;
+                        }
+                        return InteractionResult.PASS;
+                    });
             registerSaveListenerMethod.invoke(holder, saveListener);
 
             // Initial sync from Cloth Config to static fields

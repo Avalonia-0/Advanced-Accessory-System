@@ -31,6 +31,11 @@
   "advanced-accessory-system.config.name.chargePassengerLaunchHotkey": "蓄力",
   "advanced-accessory-system.config.comment.chargePassengerLaunchHotkey": "按住此快捷键可为受支持乘客累计弹出加速度大小",
   "advanced-accessory-system.hotkeys.category": "先进的饰品系统",
+  "key.advanced-accessory-system.category": "先进的饰品系统",
+  "key.advanced-accessory-system.openConfig": "打开配置界面",
+  "key.advanced-accessory-system.openHeadShulker": "打开潜影盒帽子",
+  "key.advanced-accessory-system.dismountPassengers": "扔出乘客",
+  "key.advanced-accessory-system.chargePassengerLaunch": "蓄力",
   "advanced-accessory-system.message.boatAutoPickUpAdded": "%s可以坐上船类帽子了",
   "advanced-accessory-system.message.boatAutoPickUpRemoved": "%s不能坐上船类帽子了"
 }

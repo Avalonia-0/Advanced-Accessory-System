@@ -10,8 +10,9 @@ repositories {
 
 dependencies {
     implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    implementation files(rootProject.file("libs/fabric-api-${rootProject.fabric_api_version}.jar"))
-    implementation files(rootProject.file("libs/architectury-fabric-${rootProject.architectury_version}.jar"))
+    modImplementation files(rootProject.file("libs/fabric-api-${rootProject.fabric_api_version}.jar"))
+    modImplementation files(rootProject.file("libs/fabric-key-binding-api-v1-1.1.7.jar"))
+    modImplementation files(rootProject.file("libs/architectury-fabric-${rootProject.architectury_version}.jar"))
     implementation project(":common")
 
     // Mixin annotations for Fabric-module mixins (TrinketSlotMixin etc.)

@@ -30,7 +30,12 @@
   "advanced-accessory-system.config.comment.dismountPassengersHotkey": "W\u00F6rtlich gemeint.",
   "advanced-accessory-system.config.name.chargePassengerLaunchHotkey": "Aufladen",
   "advanced-accessory-system.config.comment.chargePassengerLaunchHotkey": "Halten zum Aufladen der Auswurfgeschwindigkeit f\u00FCr unterst\u00FCtzte Passagiere.",
-  "advanced-accessory-system.hotkeys.category": "Erweitertes Accessoire-System",
+  "advanced-accessory-system.hotkeys.category": "Advanced Accessory System",
+  "key.advanced-accessory-system.category": "Advanced Accessory System",
+  "key.advanced-accessory-system.openConfig": "Open Config",
+  "key.advanced-accessory-system.openHeadShulker": "Open Head Shulker",
+  "key.advanced-accessory-system.dismountPassengers": "Eject Passengers",
+  "key.advanced-accessory-system.chargePassengerLaunch": "Charge Launch"
   "advanced-accessory-system.message.boatAutoPickUpAdded": "%s kann jetzt auf Bootsh\u00FCten sitzen.",
   "advanced-accessory-system.message.boatAutoPickUpRemoved": "%s kann nicht mehr auf Bootsh\u00FCten sitzen."
 }

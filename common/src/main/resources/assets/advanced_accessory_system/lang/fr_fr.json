@@ -30,7 +30,12 @@
   "advanced-accessory-system.config.comment.dismountPassengersHotkey": "Litt\u00E9ralement.",
   "advanced-accessory-system.config.name.chargePassengerLaunchHotkey": "Charger",
   "advanced-accessory-system.config.comment.chargePassengerLaunchHotkey": "Maintenir pour accumuler la vitesse de lancement des passagers support\u00E9s.",
-  "advanced-accessory-system.hotkeys.category": "Syst\u00E8me d\u2019accessoires avanc\u00E9",
+  "advanced-accessory-system.hotkeys.category": "Advanced Accessory System",
+  "key.advanced-accessory-system.category": "Advanced Accessory System",
+  "key.advanced-accessory-system.openConfig": "Open Config",
+  "key.advanced-accessory-system.openHeadShulker": "Open Head Shulker",
+  "key.advanced-accessory-system.dismountPassengers": "Eject Passengers",
+  "key.advanced-accessory-system.chargePassengerLaunch": "Charge Launch"
   "advanced-accessory-system.message.boatAutoPickUpAdded": "%s peut monter sur le chapeau bateau",
   "advanced-accessory-system.message.boatAutoPickUpRemoved": "%s ne peut plus monter sur le chapeau bateau"
 }

@@ -30,7 +30,12 @@
   "advanced-accessory-system.config.comment.dismountPassengersHotkey": "文字通り",
   "advanced-accessory-system.config.name.chargePassengerLaunchHotkey": "チャージ",
   "advanced-accessory-system.config.comment.chargePassengerLaunchHotkey": "押し続けると対応乗客の射出速度を蓄積します",
-  "advanced-accessory-system.hotkeys.category": "先進的アクセサリーシステム",
+  "advanced-accessory-system.hotkeys.category": "Advanced Accessory System",
+  "key.advanced-accessory-system.category": "Advanced Accessory System",
+  "key.advanced-accessory-system.openConfig": "Open Config",
+  "key.advanced-accessory-system.openHeadShulker": "Open Head Shulker",
+  "key.advanced-accessory-system.dismountPassengers": "Eject Passengers",
+  "key.advanced-accessory-system.chargePassengerLaunch": "Charge Launch"
   "advanced-accessory-system.message.boatAutoPickUpAdded": "%sはボート帽に乗れるようになりました",
   "advanced-accessory-system.message.boatAutoPickUpRemoved": "%sはボート帽に乗れなくなりました"
 }
