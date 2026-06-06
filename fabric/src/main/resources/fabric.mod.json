@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "advanced_accessory_system",
+  "version": "1.1.0",
+  "name": "Advanced Accessory System",
+  "description": "Allows non-standard items to be placed in the player helmet slot.",
+  "authors": [
+    "Alonie"
+  ],
+  "license": "MIT",
+  "icon": "assets/advanced_accessory_system/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.alonie.advancedaccessorysystem.fabric.AdvancedAccessorySystemFabric"
+    ],
+    "client": [
+      "com.alonie.advancedaccessorysystem.fabric.AdvancedAccessorySystemFabricClient"
+    ],
+    "modmenu": [
+      "com.alonie.advancedaccessorysystem.fabric.AccessoryModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "advanced_accessory_system-common.mixins.json"
+  ],
+  "depends": {
+    "fabric-api": "*",
+    "minecraft": ">=1.21.11",
+    "architectury": ">=19"
+  }
+}

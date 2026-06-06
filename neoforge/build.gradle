@@ -1,0 +1,59 @@
+plugins {
+    id "net.neoforged.moddev" version "2.0.141"
+}
+
+version = rootProject.mod_version
+
+base {
+    archivesName = "${rootProject.archives_base_name}-neoforge-${rootProject.minecraft_version}"
+}
+
+neoForge {
+    version = rootProject.neoforge_version
+
+    runs {
+        client { client() }
+        server { server() }
+    }
+
+    mods {
+        advancedaccessorysystem {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+dependencies {
+    // Architectury API (local jar, same as old project)
+    implementation files(rootProject.file("libs/architectury-${rootProject.architectury_version}-neoforge.jar"))
+
+    // Common module classes (for compilation)
+    implementation project(":common")
+
+    // Cloth Config API (runtime)
+    implementation files(rootProject.file("libs/cloth-config-${rootProject.cloth_config_version}-neoforge.jar"))
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    dependsOn(':common:jar')
+    doFirst {
+        def merged = file("${rootProject.projectDir}/libs/neoforge-${rootProject.neoforge_version}-merged.jar")
+        def arch = file("${rootProject.projectDir}/libs/architectury-${rootProject.architectury_version}-neoforge.jar")
+        if (merged.exists()) classpath = classpath + files(merged)
+        if (arch.exists()) classpath = classpath + files(arch)
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand version: project.version
+    }
+}
+
+jar {
+    // Include common module classes in the output
+    from project(":common").sourceSets.main.output
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

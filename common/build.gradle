@@ -1,0 +1,9 @@
+architectury {
+    common("fabric", "neoforge")
+}
+
+dependencies {
+    compileOnly "net.fabricmc:sponge-mixin:0.17.2+mixin.0.8.7"
+    compileOnly files(rootProject.file("libs/architectury-${rootProject.architectury_version}-neoforge.jar"))
+    modCompileOnly files(rootProject.file("libs/cloth-config-${rootProject.cloth_config_version}-fabric.jar"))
+}
