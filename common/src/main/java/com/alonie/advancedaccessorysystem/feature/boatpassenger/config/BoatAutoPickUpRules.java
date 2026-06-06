@@ -211,9 +211,11 @@ public final class BoatAutoPickUpRules {
                 continue;
             }
 
-            if (BoatPassengerConfigHelper.matchesPattern(pattern, entityId)
-                    && !this.excludedByWildcard.getOrDefault(pattern, new LinkedHashSet<>()).contains(exactId)) {
-                return true;
+            if (BoatPassengerConfigHelper.matchesPattern(pattern, entityId)) {
+                LinkedHashSet<String> excluded = this.excludedByWildcard.get(pattern);
+                if (excluded == null || !excluded.contains(exactId)) {
+                    return true;
+                }
             }
         }
 

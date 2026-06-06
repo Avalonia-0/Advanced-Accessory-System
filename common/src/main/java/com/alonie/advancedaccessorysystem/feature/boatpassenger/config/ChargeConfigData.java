@@ -19,15 +19,15 @@ public record ChargeConfigData(
     );
 
     public static ChargeConfigData of(String rawJson) {
-        if (rawJson == null || rawJson.isBlank() || BoatPassengerConfigHelper.isMalformedJson(rawJson)) {
-            return new ChargeConfigData(
-                    BoatAutoPickUpRules.parseChargeRules(BoatPassengerConfigHelper.DEFAULT_CHARGE_JSON),
-                    BoatPassengerConfigHelper.DEFAULT_CHARGE_INCREASE_VALUE,
-                    BoatPassengerConfigHelper.DEFAULT_CHARGE_TIME
-            );
+        if (rawJson == null || rawJson.isBlank()) {
+            return DEFAULT;
         }
 
-        return parse(com.google.gson.JsonParser.parseString(rawJson));
+        try {
+            return parse(com.google.gson.JsonParser.parseString(rawJson));
+        } catch (com.google.gson.JsonParseException e) {
+            return DEFAULT;
+        }
     }
 
     public static ChargeConfigData parse(JsonElement element) {

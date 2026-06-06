@@ -1,10 +1,13 @@
 package com.alonie.advancedaccessorysystem.bridge;
 
+import com.alonie.advancedaccessorysystem.client.config.AdvancedAccessorySystemConfigs;
 import com.alonie.advancedaccessorysystem.feature.armorvisibility.client.sync.ArmorVisibilitySyncClient;
 import com.alonie.advancedaccessorysystem.feature.armorvisibility.sync.ArmorVisibilitySyncManager;
 import com.alonie.advancedaccessorysystem.feature.boatpassenger.client.sync.BoatPassengerSettingsSyncClient;
 import com.alonie.advancedaccessorysystem.feature.boatpassenger.sync.BoatPassengerSettingsSyncManager;
+import com.alonie.advancedaccessorysystem.feature.headshulker.client.input.OpenHeadShulkerClient;
 import com.alonie.advancedaccessorysystem.feature.headshulker.state.HeadShulkerSessionRegistry;
+import com.alonie.advancedaccessorysystem.feature.ride.client.input.DismountPassengersClient;
 import com.alonie.advancedaccessorysystem.feature.ride.client.state.PassengerLaunchChargeState;
 import com.alonie.advancedaccessorysystem.feature.ride.client.sync.RideStateSyncClient;
 import com.alonie.advancedaccessorysystem.feature.ride.state.RideRuntimeSessionState;
@@ -59,6 +62,17 @@ public final class PlatformLifecycle {
             BoatPassengerSettingsSyncClient.onClientTick(client);
             PassengerLaunchChargeState.onClientTick(client);
             RideStateSyncClient.onClientTick(client);
+
+            // Keybinding handlers
+            if (AdvancedAccessorySystemConfigs.openConfigHotkey.consumeClick()) {
+                AdvancedAccessorySystemConfigs.openConfigScreen();
+            }
+            if (AdvancedAccessorySystemConfigs.openHeadShulkerHotkey.consumeClick()) {
+                OpenHeadShulkerClient.trigger();
+            }
+            if (AdvancedAccessorySystemConfigs.dismountPassengersHotkey.consumeClick()) {
+                DismountPassengersClient.trigger();
+            }
         });
 
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> {

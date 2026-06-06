@@ -100,7 +100,9 @@ public final class PlatformNetworking {
     public static void sendToAllClients(Identifier id, RegistryFriendlyByteBuf buf, MinecraftServer server) {
         if (server == null) return;
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
-            NetworkManager.sendToPlayer(p, id, buf);
+            RegistryFriendlyByteBuf copy = new RegistryFriendlyByteBuf(
+                    Unpooled.copiedBuffer(buf), server.registryAccess());
+            NetworkManager.sendToPlayer(p, id, copy);
         }
     }
 }

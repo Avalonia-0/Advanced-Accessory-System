@@ -12,7 +12,7 @@ public final class OpenHeadShulkerClient {
 
     public static boolean trigger() {
         Minecraft client = Minecraft.getInstance();
-        if (client == null || client.player == null) {
+        if (client == null || client.player == null || client.level == null) {
             return false;
         }
 
@@ -26,7 +26,7 @@ public final class OpenHeadShulkerClient {
             return false;
         }
 
-        var buf = PlatformNetworking.createBuffer(Minecraft.getInstance().level.registryAccess());
+        var buf = PlatformNetworking.createBuffer(client.level.registryAccess());
         new OpenHeadShulkerPayload().write(buf);
         PlatformNetworking.sendToServer(OpenHeadShulkerPayload.ID, buf);
         return true;

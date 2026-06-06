@@ -50,15 +50,15 @@ public final class PassengerLaunchChargeState {
             chargedLaunchSpeed = BoatPassengerConfigHelper.sanitizeDismountLaunchSpeed(
                     chargedLaunchSpeed + chargeConfig.increaseValue()
             );
+            chargedTicks++;
         }
-
-        chargedTicks++;
         chargeActive = true;
         client.player.displayClientMessage(Component.literal(String.format(Locale.ROOT, "%.2f", chargedLaunchSpeed)), true);
     }
 
     private static Entity getChargeTarget(Player player) {
         BoatPassengerSettingsState settings = BoatPassengerSettingsSyncClient.getCurrentSettings();
+        if (settings == null) return null;
         List<Entity> passengers = player.getPassengers();
         for (Entity passenger : passengers) {
             if (settings.allowsChargedLaunch(passenger)) {

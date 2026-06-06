@@ -57,6 +57,6 @@ public class AccessoryConfig implements ConfigData {
         if (boatPassengerAutoRideRadius < 0.0) boatPassengerAutoRideRadius = 2.0;
         if (dismountPassengerLaunchSpeed < 0.0) dismountPassengerLaunchSpeed = 0.8;
         if (chargeIncreaseValue < 0.0) chargeIncreaseValue = 0.08;
-        if (chargeTime < 1) chargeTime = 40;
+        if (chargeTime < 1 || chargeTime > 200) chargeTime = 40;
     }
 }

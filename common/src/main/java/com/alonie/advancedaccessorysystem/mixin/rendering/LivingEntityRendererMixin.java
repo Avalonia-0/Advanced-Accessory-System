@@ -44,5 +44,14 @@ public abstract class LivingEntityRendererMixin {
         if (ArmorVisibilityMask.isHidden(mask, EquipmentSlot.HEAD)) {
             humanoidState.headEquipment = net.minecraft.world.item.ItemStack.EMPTY;
         }
+        if (ArmorVisibilityMask.isHidden(mask, EquipmentSlot.CHEST)) {
+            humanoidState.chestEquipment = net.minecraft.world.item.ItemStack.EMPTY;
+        }
+        if (ArmorVisibilityMask.isHidden(mask, EquipmentSlot.LEGS)) {
+            humanoidState.legsEquipment = net.minecraft.world.item.ItemStack.EMPTY;
+        }
+        if (ArmorVisibilityMask.isHidden(mask, EquipmentSlot.FEET)) {
+            humanoidState.feetEquipment = net.minecraft.world.item.ItemStack.EMPTY;
+        }
     }
 }

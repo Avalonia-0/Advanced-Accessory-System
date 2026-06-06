@@ -59,9 +59,13 @@ public final class ArmorVisibilitySyncClient {
 
         ArmorVisibilityClientCache.setSyncedMask(client.player.getUUID(), localMask);
 
-        RegistryFriendlyByteBuf buf = PlatformNetworking.createBuffer(client.level.registryAccess());
-        new ArmorVisibilityUpdatePayload(localMask).write(buf);
-        PlatformNetworking.sendToServer(ArmorVisibilityUpdatePayload.ID, buf);
+        try {
+            RegistryFriendlyByteBuf buf = PlatformNetworking.createBuffer(client.level.registryAccess());
+            new ArmorVisibilityUpdatePayload(localMask).write(buf);
+            PlatformNetworking.sendToServer(ArmorVisibilityUpdatePayload.ID, buf);
+        } catch (Exception e) {
+            return; // send failed — don't mark as synced
+        }
         ArmorVisibilityClientCache.setLastSentMask(localMask);
         ArmorVisibilityClientCache.clearLocalStateDirty();
         ArmorVisibilityClientCache.setLastSentTick(ArmorVisibilityClientCache.currentClientTick());

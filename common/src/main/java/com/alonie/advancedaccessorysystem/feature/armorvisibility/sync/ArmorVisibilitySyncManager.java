@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class ArmorVisibilitySyncManager {
-    private static final long FULL_RESYNC_INTERVAL_TICKS = 40L;
+    private static final long FULL_RESYNC_INTERVAL_TICKS = 200L; // 10 seconds at 20 TPS
 
     private ArmorVisibilitySyncManager() {
     }
@@ -22,15 +22,19 @@ public final class ArmorVisibilitySyncManager {
         if (player == null || payload == null) {
             return;
         }
-        updateVisibilityMask(player, payload.visibilityMask(), player.level().getServer());
+        if (player.level() == null) return;
+        MinecraftServer server = player.level().getServer();
+        if (server == null) return;
+        updateVisibilityMask(player, payload.visibilityMask(), server);
     }
 
     public static void onPlayerLoggedIn(ServerPlayer player) {
         if (player == null) {
             return;
         }
+        // Defer sync to next SERVER_POST tick via pending-full-sync mechanism,
+        // avoiding race between login phase and play-phase packet delivery.
         ArmorVisibilityServerState.markPendingFullSync(player.getUUID());
-        broadcast(player.level().getServer(), new ArmorVisibilitySyncPayload(player.getUUID(), 0));
     }
 
     public static void onPlayerLoggedOut(ServerPlayer player) {
@@ -39,7 +43,11 @@ public final class ArmorVisibilitySyncManager {
         }
         UUID playerUuid = player.getUUID();
         ArmorVisibilityServerState.clearPlayer(playerUuid);
-        broadcast(player.level().getServer(), new ArmorVisibilitySyncPayload(playerUuid, 0));
+        if (player.level() == null) return;
+        MinecraftServer server = player.level().getServer();
+        if (server != null) {
+            broadcast(server, new ArmorVisibilitySyncPayload(playerUuid, 0));
+        }
     }
 
     public static void resetRuntimeState() {

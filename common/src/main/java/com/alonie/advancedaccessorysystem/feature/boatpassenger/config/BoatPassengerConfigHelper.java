@@ -9,7 +9,9 @@ import net.minecraft.resources.Identifier;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public final class BoatPassengerConfigHelper {
@@ -18,7 +20,11 @@ public final class BoatPassengerConfigHelper {
     public static final double MIN_DISMOUNT_LAUNCH_SPEED = 0.0D;
     public static final double MAX_DISMOUNT_LAUNCH_SPEED = 128.0D;
     public static final double DEFAULT_CHARGE_INCREASE_VALUE = 0.08D;
+    public static final double MAX_CHARGE_INCREASE_VALUE = 1.0D;
     public static final int DEFAULT_CHARGE_TIME = 40;
+    public static final int MAX_CHARGE_TIME = 200;
+
+    private static final Map<String, Pattern> PATTERN_CACHE = new ConcurrentHashMap<>();
 
     public static final String DEFAULT_BOAT_AUTO_PICK_UP_JSON =
             "{\"allowed\":[\"minecraft:villager\",\"minecraft:player\",\"*_boat\",\"*_raft\",\"minecraft:minecart\",\"minecraft:tnt_minecart\",\"minecraft:tnt\",\"minecraft:end_crystal\",\"minecraft:falling_block\"],\"excluded\":{}}";
@@ -71,11 +77,15 @@ public final class BoatPassengerConfigHelper {
     }
 
     public static double sanitizeChargeIncreaseValue(double value) {
-        return clamp(value, 0.0D, MAX_DISMOUNT_LAUNCH_SPEED);
+        return clamp(value, 0.0D, MAX_CHARGE_INCREASE_VALUE);
     }
 
     public static int sanitizeChargeTime(int value) {
-        return Math.max(0, value);
+        return clamp(value, 0, MAX_CHARGE_TIME);
+    }
+
+    private static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     public static Set<String> getDefaultAutoPickUpAllowedPatterns() {
@@ -177,7 +187,8 @@ public final class BoatPassengerConfigHelper {
         String fullId = id.toString();
         String path = id.getPath();
         String candidate = pattern.contains(":") ? fullId : path;
-        return Pattern.compile(toRegex(pattern)).matcher(candidate).matches();
+        return PATTERN_CACHE.computeIfAbsent(pattern, p -> Pattern.compile(toRegex(p)))
+                .matcher(candidate).matches();
     }
 
     public static boolean isMalformedJson(String rawJson) {

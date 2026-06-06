@@ -2,15 +2,15 @@ package com.alonie.advancedaccessorysystem.feature.armorvisibility.client.state;
 
 import com.alonie.advancedaccessorysystem.feature.armorvisibility.ArmorVisibilityMask;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Client-side cache for synced armor visibility masks and local resend tracking.
  */
 public final class ArmorVisibilityClientCache {
-    private static final Map<UUID, Integer> SYNCED_MASKS = new LinkedHashMap<>();
+    private static final ConcurrentMap<UUID, Integer> SYNCED_MASKS = new ConcurrentHashMap<>();
     private static int lastSentMask = -1;
     private static boolean localStateDirty = true;
     private static long clientTickCounter = 0L;

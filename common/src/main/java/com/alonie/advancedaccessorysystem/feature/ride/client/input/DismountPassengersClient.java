@@ -11,11 +11,11 @@ public final class DismountPassengersClient {
 
     public static boolean trigger() {
         Minecraft client = Minecraft.getInstance();
-        if (client == null || client.player == null) {
+        if (client == null || client.player == null || client.level == null) {
             return false;
         }
 
-        var buf = PlatformNetworking.createBuffer(Minecraft.getInstance().level.registryAccess());
+        var buf = PlatformNetworking.createBuffer(client.level.registryAccess());
         new DismountPassengersPayload(
                 PassengerLaunchChargeState.hasChargedLaunchOverride(),
                 PassengerLaunchChargeState.getChargedLaunchSpeed()
