@@ -21,6 +21,9 @@
     "requireAnnotations": true
   },
   "client": [
-    "rendering.LivingEntityRendererMixin"
+    "rendering.LivingEntityRendererMixin",
+    "rendering.LivingEntityRenderStateMixin",
+    "rendering.LivingEntityRendererExtractMixin",
+    "rendering.LivingEntityRendererLayerRegistrationMixin"
   ]
 }

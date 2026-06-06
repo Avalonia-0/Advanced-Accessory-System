@@ -130,6 +130,6 @@ public final class PlayerRideInteractionHandler {
     }
 
     private static boolean isRideableByRideAccessory(Player player) {
-        return RideAccessoryHelper.hasRideAccessory(player);
+        return RideAccessoryHelper.supportsPassengers(player);
     }
 }
