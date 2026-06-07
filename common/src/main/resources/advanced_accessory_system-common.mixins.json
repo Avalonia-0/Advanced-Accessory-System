@@ -22,6 +22,6 @@
   },
   "client": [
     "rendering.LivingEntityRendererMixin",
-    "rendering.HeadAccessoryRedirectMixin"
+    "rendering.HeadAccessoryTailMixin"
   ]
 }
