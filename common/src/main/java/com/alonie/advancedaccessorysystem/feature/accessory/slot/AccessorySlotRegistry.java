@@ -56,6 +56,24 @@ public final class AccessorySlotRegistry {
     }
 
     /**
+     * Like {@link #findFirst} but only scans the provider with the given
+     * {@code providerName}. Returns {@link ItemStack#EMPTY} if the provider
+     * is not found or has no matching stack.
+     */
+    public static ItemStack findFirst(LivingEntity entity, Predicate<ItemStack> predicate,
+                                       String providerName) {
+        for (AccessorySlotProvider provider : PROVIDERS) {
+            if (!provider.name().equals(providerName)) continue;
+            ItemStack stack = provider.getStack(entity);
+            if (!stack.isEmpty() && predicate.test(stack)) {
+                return stack;
+            }
+            return ItemStack.EMPTY;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
      * Like {@link #findFirst} but also returns which provider matched.
      * Useful when callers need to write back to the same slot
      * (e.g. shulker box sessions).

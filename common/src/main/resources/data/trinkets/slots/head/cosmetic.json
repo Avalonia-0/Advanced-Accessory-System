@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "amount": 1,
+    "order": 100,
+    "icon": "trinkets:gui/slots/hat",
+    "validator_predicates": ["advanced_accessory_system:head_cosmetic"],
+    "quick_move_predicates": ["trinkets:none"],
+    "tooltip_predicates": ["trinkets:none"]
+}
