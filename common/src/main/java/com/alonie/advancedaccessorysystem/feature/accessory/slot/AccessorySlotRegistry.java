@@ -89,13 +89,39 @@ public final class AccessorySlotRegistry {
         return false;
     }
 
+    /**
+     * Try to equip an item stack to the first empty accessory slot.
+     * Scans providers in registration order. Useful for auto-equip
+     * interactions.
+     *
+     * @param entity the wearer
+     * @param stack  the item to equip (not modified; use the return
+     *               value to know if the caller should shrink the stack)
+     * @return true if the item was placed into a slot
+     */
+    public static boolean tryEquip(LivingEntity entity, ItemStack stack) {
+        Objects.requireNonNull(stack);
+        for (AccessorySlotProvider provider : PROVIDERS) {
+            if (provider.getStack(entity).isEmpty()) {
+                return provider.setStack(entity, stack.copy());
+            }
+        }
+        return false;
+    }
+
     // ---- Rendering query ---------------------------------------------------
 
     /**
      * Return the first non-empty stack from a provider that
      * {@link AccessorySlotProvider#providesRender() provides rendering}.
      * Returns {@link ItemStack#EMPTY} if no visible accessory is equipped.
+     *
+     * @deprecated No longer needed — the {@code @Redirect} mixin in
+     *             {@code HeadAccessoryRedirectMixin} handles rendering
+     *             by injecting into the vanilla rendering pipeline directly.
+     *             Scheduled for removal in the next major version.
      */
+    @Deprecated(since = "1.2.0", forRemoval = false)
     public static ItemStack findRenderStack(LivingEntity entity) {
         for (AccessorySlotProvider provider : PROVIDERS) {
             if (provider.providesRender()) {
