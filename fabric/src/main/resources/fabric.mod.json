@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "advanced_accessory_system",
-  "version": "1.1.0",
+  "version": "${version}",
   "name": "Advanced Accessory System",
   "description": "Allows non-standard items to be placed in the player helmet slot.",
   "authors": [
