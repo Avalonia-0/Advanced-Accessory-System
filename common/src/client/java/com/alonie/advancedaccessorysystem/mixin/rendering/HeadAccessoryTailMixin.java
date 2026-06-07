@@ -1,8 +1,8 @@
 package com.alonie.advancedaccessorysystem.mixin.rendering;
 
+import com.alonie.advancedaccessorysystem.feature.accessory.client.render.BlockHeadRenderState;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.AccessorySlotRegistry;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.VanillaHeadSlotProvider;
-import com.alonie.advancedaccessorysystem.mixin.rendering.LivingEntityRenderStateBlockMixin;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -90,9 +90,8 @@ public class HeadAccessoryTailMixin {
         // BlockItems render as 3D block models on the head.
         // Store the BlockState for the BlockHeadFeatureRenderer to pick up.
         if (accessory.getItem() instanceof BlockItem blockItem) {
-            var accessor = (LivingEntityRenderStateBlockMixin) (Object) state;
-            accessor.aas$headBlock = blockItem.getBlock().defaultBlockState();
-            // Don't set headItem — the block renderer handles this.
+            ((BlockHeadRenderState) state).aas$setHeadBlock(
+                    blockItem.getBlock().defaultBlockState());
             return;
         }
 

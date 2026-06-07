@@ -1,6 +1,6 @@
 package com.alonie.advancedaccessorysystem.feature.accessory.client.render;
 
-import com.alonie.advancedaccessorysystem.mixin.rendering.LivingEntityRenderStateBlockMixin;
+import com.alonie.advancedaccessorysystem.feature.accessory.client.render.BlockHeadRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -34,7 +34,7 @@ public class BlockHeadFeatureRenderer
     @Override
     public void submit(PoseStack poseStack, SubmitNodeCollector collector, int packedLight,
                        LivingEntityRenderState state, float limbSwing, float limbSwingAmount) {
-        BlockState blockState = ((LivingEntityRenderStateBlockMixin) (Object) state).aas$headBlock;
+        BlockState blockState = ((BlockHeadRenderState) state).aas$getHeadBlock();
         if (blockState == null) {
             return;
         }
