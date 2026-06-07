@@ -205,7 +205,6 @@ public final class BoatPassengerWhitelistConfig {
                 : BoatPassengerConfigHelper.DEFAULT_ADDED_SADDLE_IDS_JSON;
 
         applyAutoPickUpRules(BoatAutoPickUpRules.parse(rawAutoPickUpJson));
-        applyChargeConfig(ChargeConfigData.of(rawChargeJson));
         applyAddedBoatPatterns(BoatPassengerConfigHelper.parseAddedBoatPatterns(rawAddedBoatIdsJson));
         applyAddedSaddlePatterns(BoatPassengerConfigHelper.parseAddedSaddlePatterns(rawAddedSaddleIdsJson));
 
@@ -245,11 +244,6 @@ public final class BoatPassengerWhitelistConfig {
         autoPickUpJson = autoPickUpRules.toJsonString();
     }
 
-    private static void applyChargeConfig(ChargeConfigData newChargeConfig) {
-        chargeConfig = newChargeConfig;
-        chargeJson = chargeConfig.toJsonString();
-        AdvancedAccessorySystemConfigs.applyChargeConfigValues(chargeConfig.increaseValue(), chargeConfig.chargeTime());
-    }
 
     private static void applyAddedBoatPatterns(BoatAutoPickUpRules rules) {
         addedBoatRules = rules.copy();

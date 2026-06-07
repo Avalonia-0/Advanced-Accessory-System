@@ -1,24 +1,19 @@
 package com.alonie.advancedaccessorysystem.feature.ride.sync;
 
-import com.alonie.advancedaccessorysystem.bridge.PlatformNetworking;
 import com.alonie.advancedaccessorysystem.feature.boatpassenger.config.BoatPassengerConfigHelper;
 import com.alonie.advancedaccessorysystem.feature.boatpassenger.state.BoatPassengerSettingsState;
 import com.alonie.advancedaccessorysystem.feature.boatpassenger.sync.BoatPassengerSettingsSyncManager;
-import com.alonie.advancedaccessorysystem.feature.ride.network.s2c.sync.RideStateSyncPayload;
 import com.alonie.advancedaccessorysystem.feature.ride.rules.RideAccessoryHelper;
 import com.alonie.advancedaccessorysystem.feature.ride.state.RideRuntimeSessionState;
 import com.alonie.advancedaccessorysystem.feature.ride.state.RideSnapshot;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.Comparator;
 
 public final class PlayerRideSyncManager {
     private static final int RIDE_ACCESSORY_EJECT_CHECK_INTERVAL = 5;
-    private static final long HOTKEY_DISMOUNT_AUTO_RIDE_COOLDOWN_TICKS = 40L;
     private static final long PASSENGER_SELF_DISMOUNT_AUTO_RIDE_COOLDOWN_TICKS = 60L;
     private static final int MAX_PASSENGERS = 1;
 
@@ -40,7 +35,6 @@ public final class PlayerRideSyncManager {
             boolean changed = previous == null || !previous.sameAs(current);
             if (changed) {
                 maybeApplyPassengerSelfDismountCooldown(player, previous, current);
-                sendVehicleClientSync(player, previous, current);
             }
 
             RideRuntimeSessionState.putLastState(player.getUUID(), current);
@@ -119,40 +113,6 @@ public final class PlayerRideSyncManager {
                 && vehiclePlayer.distanceToSqr(entity) <= radiusSquared;
     }
 
-    public static boolean forceDismountPassengersFromHotkey(
-            ServerPlayer vehiclePlayer,
-            boolean useChargedLaunch,
-            double chargedLaunchSpeed
-    ) {
-        if (vehiclePlayer == null || vehiclePlayer.getPassengers().isEmpty()) {
-            return false;
-        }
-
-        BoatPassengerSettingsState settings = BoatPassengerSettingsSyncManager.getGlobalSettings();
-
-        for (Entity passenger : java.util.List.copyOf(vehiclePlayer.getPassengers())) {
-            passenger.stopRiding();
-            applyAutoRideCooldown(passenger, HOTKEY_DISMOUNT_AUTO_RIDE_COOLDOWN_TICKS);
-
-            Vec3 launchVelocity = getHotkeyDismountLaunchVelocity(
-                    vehiclePlayer,
-                    settings,
-                    passenger,
-                    useChargedLaunch,
-                    chargedLaunchSpeed
-            );
-            if (launchVelocity.lengthSqr() > 0.0D) {
-                passenger.setDeltaMovement(passenger.getDeltaMovement().add(launchVelocity));
-
-                if (passenger instanceof ServerPlayer serverPlayerPassenger) {
-                    serverPlayerPassenger.connection.send(new ClientboundSetEntityMotionPacket(serverPlayerPassenger));
-                }
-            }
-        }
-
-        return true;
-    }
-
     public static boolean forceDismountPassengers(ServerPlayer vehiclePlayer, String reason) {
         if (vehiclePlayer == null || vehiclePlayer.getPassengers().isEmpty()) {
             return false;
@@ -199,54 +159,4 @@ public final class PlayerRideSyncManager {
     private static void applyAutoRideCooldown(Entity entity, long durationTicks) {
         RideRuntimeSessionState.applyAutoRideCooldown(entity.getUUID(), durationTicks);
     }
-
-    private static Vec3 getHotkeyDismountLaunchVelocity(
-            ServerPlayer vehiclePlayer,
-            BoatPassengerSettingsState settings,
-            Entity passenger,
-            boolean useChargedLaunch,
-            double chargedLaunchSpeed
-    ) {
-        double speed = settings.dismountLaunchSpeed();
-        if (useChargedLaunch && passenger != null && settings.allowsChargedLaunch(passenger)) {
-            speed = BoatPassengerConfigHelper.sanitizeDismountLaunchSpeed(chargedLaunchSpeed);
-        }
-        if (speed <= 0.0D) {
-            return Vec3.ZERO;
-        }
-
-        return vehiclePlayer.getViewVector(1.0F).scale(speed);
-    }
-
-    private static void sendVehicleClientSync(ServerPlayer vehiclePlayer, RideSnapshot previous, RideSnapshot current) {
-        int[] previousIds = previous == null ? new int[0] : previous.passengerIds();
-        int[] currentIds = current.passengerIds();
-
-        var buf = PlatformNetworking.createBuffer(vehiclePlayer.registryAccess());
-        for (int passengerId : currentIds) {
-            if (!contains(previousIds, passengerId)) {
-                buf.clear();
-                new RideStateSyncPayload(vehiclePlayer.getId(), passengerId, true).write(buf);
-                PlatformNetworking.sendToClient(RideStateSyncPayload.ID, buf, vehiclePlayer);
-            }
-        }
-
-        for (int passengerId : previousIds) {
-            if (!contains(currentIds, passengerId)) {
-                buf.clear();
-                new RideStateSyncPayload(vehiclePlayer.getId(), passengerId, false).write(buf);
-                PlatformNetworking.sendToClient(RideStateSyncPayload.ID, buf, vehiclePlayer);
-            }
-        }
-    }
-
-    private static boolean contains(int[] ids, int id) {
-        for (int value : ids) {
-            if (value == id) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

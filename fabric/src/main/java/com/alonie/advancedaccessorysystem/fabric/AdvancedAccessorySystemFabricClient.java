@@ -13,7 +13,5 @@ public final class AdvancedAccessorySystemFabricClient implements ClientModIniti
         // Explicit keybinding registration for Fabric (compatible across Fabric API versions)
         KeyBindingHelper.registerKeyBinding(AdvancedAccessorySystemConfigs.openConfigHotkey);
         KeyBindingHelper.registerKeyBinding(AdvancedAccessorySystemConfigs.openHeadShulkerHotkey);
-        KeyBindingHelper.registerKeyBinding(AdvancedAccessorySystemConfigs.dismountPassengersHotkey);
-        KeyBindingHelper.registerKeyBinding(AdvancedAccessorySystemConfigs.chargePassengerLaunchHotkey);
     }
 }

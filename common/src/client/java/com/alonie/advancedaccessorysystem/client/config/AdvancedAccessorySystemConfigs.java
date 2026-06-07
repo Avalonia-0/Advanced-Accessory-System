@@ -39,9 +39,6 @@ public final class AdvancedAccessorySystemConfigs {
     public static boolean hideLeggings = false;
     public static boolean hideBoots = false;
     public static double boatPassengerAutoRideRadius = 2.0;
-    public static double dismountPassengerLaunchSpeed = 0.8;
-    public static double chargeIncreaseValue = 0.08;
-    public static int chargeTime = 40;
 
     // ---- KeyMappings -------------------------------------------------------
     // Note: Minecraft 1.21+ uses KeyMapping.Category enum (not string).
@@ -55,12 +52,6 @@ public final class AdvancedAccessorySystemConfigs {
     public static final KeyMapping openHeadShulkerHotkey = new KeyMapping(
             "key.advanced-accessory-system.openHeadShulker",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, KeyMapping.Category.MISC);
-    public static final KeyMapping dismountPassengersHotkey = new KeyMapping(
-            "key.advanced-accessory-system.dismountPassengers",
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, KeyMapping.Category.MISC);
-    public static final KeyMapping chargePassengerLaunchHotkey = new KeyMapping(
-            "key.advanced-accessory-system.chargePassengerLaunch",
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_SHIFT, KeyMapping.Category.MISC);
 
     private static File configFile;
     private static Object clothHolder; // ConfigHolder<AccessoryConfig> if Cloth Config available
@@ -153,9 +144,6 @@ public final class AdvancedAccessorySystemConfigs {
             hideLeggings = cfg.getClass().getField("hideLeggings").getBoolean(cfg);
             hideBoots = cfg.getClass().getField("hideBoots").getBoolean(cfg);
             boatPassengerAutoRideRadius = cfg.getClass().getField("boatPassengerAutoRideRadius").getDouble(cfg);
-            dismountPassengerLaunchSpeed = cfg.getClass().getField("dismountPassengerLaunchSpeed").getDouble(cfg);
-            chargeIncreaseValue = cfg.getClass().getField("chargeIncreaseValue").getDouble(cfg);
-            chargeTime = cfg.getClass().getField("chargeTime").getInt(cfg);
         } catch (Exception e) {
             LOGGER.warn("syncFromConfig failed: {}", e.getMessage());
         }
@@ -170,9 +158,6 @@ public final class AdvancedAccessorySystemConfigs {
             cfg.getClass().getField("hideLeggings").setBoolean(cfg, hideLeggings);
             cfg.getClass().getField("hideBoots").setBoolean(cfg, hideBoots);
             cfg.getClass().getField("boatPassengerAutoRideRadius").setDouble(cfg, boatPassengerAutoRideRadius);
-            cfg.getClass().getField("dismountPassengerLaunchSpeed").setDouble(cfg, dismountPassengerLaunchSpeed);
-            cfg.getClass().getField("chargeIncreaseValue").setDouble(cfg, chargeIncreaseValue);
-            cfg.getClass().getField("chargeTime").setInt(cfg, chargeTime);
             clothHolder.getClass().getMethod("save").invoke(clothHolder);
         } catch (Exception e) {
             LOGGER.warn("saveCloth failed: {}", e.getMessage());
@@ -197,9 +182,6 @@ public final class AdvancedAccessorySystemConfigs {
             hideLeggings = getBool(json, "hideLeggings", false);
             hideBoots = getBool(json, "hideBoots", false);
             boatPassengerAutoRideRadius = getDouble(json, "boatPassengerAutoRideRadius", 2.0);
-            dismountPassengerLaunchSpeed = getDouble(json, "dismountPassengerLaunchSpeed", 0.8);
-            chargeIncreaseValue = getDouble(json, "chargeIncreaseValue", 0.08);
-            chargeTime = getInt(json, "chargeTime", 40);
         } catch (IOException | JsonParseException e) {
             System.err.println("Failed to load config: " + e.getMessage());
         }
@@ -214,9 +196,6 @@ public final class AdvancedAccessorySystemConfigs {
         json.addProperty("hideLeggings", hideLeggings);
         json.addProperty("hideBoots", hideBoots);
         json.addProperty("boatPassengerAutoRideRadius", boatPassengerAutoRideRadius);
-        json.addProperty("dismountPassengerLaunchSpeed", dismountPassengerLaunchSpeed);
-        json.addProperty("chargeIncreaseValue", chargeIncreaseValue);
-        json.addProperty("chargeTime", chargeTime);
         try (FileWriter writer = new FileWriter(configFile)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(json, writer);
         } catch (IOException e) {
@@ -253,15 +232,6 @@ public final class AdvancedAccessorySystemConfigs {
     }
 
     public static double getBoatPassengerAutoRideRadius() { return boatPassengerAutoRideRadius; }
-    public static double getDismountPassengerLaunchSpeed() { return dismountPassengerLaunchSpeed; }
-    public static double getChargeIncreaseValue() { return chargeIncreaseValue; }
-    public static int getChargeTime() { return chargeTime; }
-
-    public static void applyChargeConfigValues(double increaseValue, int time) {
-        chargeIncreaseValue = increaseValue;
-        chargeTime = time;
-        if (clothAvailable) saveCloth(); else saveLegacy();
-    }
 
     public static boolean isClothConfigAvailable() {
         return clothAvailable;

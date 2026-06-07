@@ -22,7 +22,5 @@ public final class AdvancedAccessorySystemNeoForgeClient {
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(AdvancedAccessorySystemConfigs.openConfigHotkey);
         event.register(AdvancedAccessorySystemConfigs.openHeadShulkerHotkey);
-        event.register(AdvancedAccessorySystemConfigs.dismountPassengersHotkey);
-        event.register(AdvancedAccessorySystemConfigs.chargePassengerLaunchHotkey);
     }
 }

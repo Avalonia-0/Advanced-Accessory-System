@@ -22,8 +22,6 @@
   "key.advanced-accessory-system.category": "Advanced Accessory System",
   "key.advanced-accessory-system.openConfig": "Open Config",
   "key.advanced-accessory-system.openHeadShulker": "Open Head Shulker",
-  "key.advanced-accessory-system.dismountPassengers": "Eject Passengers",
-  "key.advanced-accessory-system.chargePassengerLaunch": "Charge Launch",
   "advanced-accessory-system.message.boatAutoPickUpAdded": "%s can now ride on boat hats.",
   "advanced-accessory-system.message.boatAutoPickUpRemoved": "%s can no longer ride on boat hats."
 }

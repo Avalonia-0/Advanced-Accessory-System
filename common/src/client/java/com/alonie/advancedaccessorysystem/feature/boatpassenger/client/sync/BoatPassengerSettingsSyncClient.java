@@ -56,7 +56,7 @@ public final class BoatPassengerSettingsSyncClient {
         String boatAutoPickUpJson = BoatPassengerWhitelistConfig.getBoatAutoPickUpJson();
         String addedBoatIdsJson = BoatPassengerWhitelistConfig.getAddedBoatIdsJson();
         String addedSaddleIdsJson = BoatPassengerWhitelistConfig.getAddedSaddleIdsJson();
-        double dismountLaunchSpeed = AdvancedAccessorySystemConfigs.getDismountPassengerLaunchSpeed();
+        double dismountLaunchSpeed = 0.8D; // default dismount speed
         String chargeJson = BoatPassengerWhitelistConfig.getChargeJson();
         if (!BoatPassengerSettingsClientState.shouldSend(
                 radius,
@@ -105,7 +105,7 @@ public final class BoatPassengerSettingsSyncClient {
         return BoatPassengerSettingsState.of(
                 AdvancedAccessorySystemConfigs.getBoatPassengerAutoRideRadius(),
                 BoatPassengerWhitelistConfig.getBoatAutoPickUpJson(),
-                AdvancedAccessorySystemConfigs.getDismountPassengerLaunchSpeed(),
+                0.8D,
                 BoatPassengerWhitelistConfig.getChargeJson()
         );
     }
