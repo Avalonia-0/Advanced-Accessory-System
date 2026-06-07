@@ -1,11 +1,8 @@
 package com.alonie.advancedaccessorysystem.feature.accessory.client.render;
 
-import com.alonie.advancedaccessorysystem.feature.accessory.client.render.BlockHeadRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -16,12 +13,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Renders {@link BlockState block items} on the player's head as 3D block
- * models instead of flat item sprites.
+ * models using the {@link SubmitNodeCollector#submitBlock} API, which
+ * integrates correctly with the 1.21.11 rendering pipeline.
  *
- * <p>When a {@code BlockItem} is placed in the Trinkets hat slot (or any
- * non-vanilla head slot), this layer renders its block model using
- * {@code BlockRenderDispatcher.renderSingleBlock()} with the same head
- * positioning as the vanilla {@code CustomHeadLayer}.
+ * <p>When a {@code BlockItem} is placed in any accessory slot, this layer
+ * renders its block model with the same head positioning as
+ * {@code CustomHeadLayer}.
  */
 public class BlockHeadFeatureRenderer
         extends RenderLayer<LivingEntityRenderState, EntityModel<LivingEntityRenderState>> {
@@ -54,16 +51,10 @@ public class BlockHeadFeatureRenderer
         poseStack.scale(scale, scale, scale);
         poseStack.translate(-0.5, -0.5, -0.5);
 
-        // Render the block model
-        Minecraft mc = Minecraft.getInstance();
+        // Submit the block model through the proper rendering pipeline.
+        // submitBlock(poseStack, state, packedLight, overlay, tintARGB)
         int overlay = LivingEntityRenderer.getOverlayCoords(state, 0.0F);
-        mc.getBlockRenderer().renderSingleBlock(
-                blockState,
-                poseStack,
-                mc.renderBuffers().bufferSource(),
-                packedLight,
-                overlay
-        );
+        collector.submitBlock(poseStack, blockState, packedLight, overlay, -1);
 
         poseStack.popPose();
     }
