@@ -1,11 +1,11 @@
 package com.alonie.advancedaccessorysystem.mixin.rendering;
 
-import com.alonie.advancedaccessorysystem.feature.accessory.capability.HeadAccessoryCapabilities;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.AccessorySlotRegistry;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
@@ -16,15 +16,21 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Populates the render state's {@code headItem} with a custom accessory
- * from ANY accessory provider (vanilla head slot, Trinkets hat slot, etc.)
- * during render state extraction, so the vanilla {@code CustomHeadLayer}
- * renders it using the standard head-item pipeline.
+ * Injects ANY non-empty item from any accessory provider into
+ * {@code LivingEntityRenderState.headItem} during render state extraction,
+ * so the vanilla {@code CustomHeadLayer} renders it on the player's head.
  *
- * <p>This approach avoids using {@code @Redirect} (which would need a
- * refmap in production environments) and instead injects at TAIL to
- * overwrite the resolved {@code headItem} when a custom accessory is
- * found.
+ * <p>This ensures items placed in non-vanilla slots (Trinkets hat slot,
+ * future cosmetic slots, etc.) are rendered on the player model using
+ * the standard head-item pipeline — exactly as if they were in the
+ * vanilla head equipment slot.
+ *
+ * <p>Items already in the vanilla head slot are skipped because they
+ * are already handled by the vanilla pipeline (via {@code headItem},
+ * {@code HumanoidArmorLayer}, or {@code CustomHeadLayer}).
+ * The reference-identity check {@code accessory == entity.getItemBySlot(HEAD)}
+ * prevents double-rendering: if the item found by the registry is the
+ * same object as the vanilla head equipment, vanilla already handles it.
  */
 @Mixin(LivingEntityRenderer.class)
 public class HeadAccessoryTailMixin {
@@ -42,22 +48,29 @@ public class HeadAccessoryTailMixin {
                                                   LivingEntityRenderState state,
                                                   float partialTick,
                                                   CallbackInfo ci) {
-        // Find a custom accessory across all providers
-        ItemStack accessory = AccessorySlotRegistry.findFirst(entity,
-                stack -> !HeadAccessoryCapabilities.resolve(stack).isEmpty());
-        if (accessory.isEmpty()) {
-            return;
-        }
-
         // If vanilla already set headItem for a non-armor head item
-        // (pumpkin, skull etc.), we keep it — no override.
+        // (pumpkin, skull, etc.), keep it — no override.
         if (!state.headItem.isEmpty()) {
             return;
         }
 
-        // Resolve the accessory as a HEAD display item, replacing
-        // whatever vanilla may have left empty. CustomHeadLayer
-        // will pick this up automatically.
+        // Find ANY non-empty item across all accessory providers
+        ItemStack accessory = AccessorySlotRegistry.findFirst(entity,
+                stack -> !stack.isEmpty());
+        if (accessory.isEmpty()) {
+            return;
+        }
+
+        // Reference-identity check: if the found item IS the vanilla head
+        // equipment object, then the vanilla pipeline already handles it
+        // (via headEquipment for armor or headItem for non-armor).
+        // Only inject items from OTHER providers (Trinkets, etc.).
+        if (accessory == entity.getItemBySlot(EquipmentSlot.HEAD)) {
+            return;
+        }
+
+        // Resolve the accessory as a HEAD display item so CustomHeadLayer
+        // renders it with the standard head-item pipeline.
         this.itemModelResolver.updateForLiving(
                 state.headItem,
                 accessory,
