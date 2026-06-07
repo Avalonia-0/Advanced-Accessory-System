@@ -28,5 +28,8 @@
     "fabric-api": "*",
     "minecraft": ">=1.21.11",
     "architectury": ">=19"
+  },
+  "recommends": {
+    "trinkets": ">=3.11.0-beta.2"
   }
 }
