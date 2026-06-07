@@ -17,15 +17,13 @@
   "advanced-accessory-system.config.name.dismountPassengerLaunchSpeed": "Base Speed",
   "advanced-accessory-system.config.comment.dismountPassengerLaunchSpeed": "Speed when ejecting passengers.",
   "advanced-accessory-system.config.name.chargeIncreaseValue": "Charge Acceleration Value",
-  "advanced-accessory-system.config.comment.chargeIncreaseValue": "Speed accumulated per tick, in blocks/tick\u00B2.",
+  "advanced-accessory-system.config.comment.chargeIncreaseValue": "Speed accumulated per tick, in blocks/tick².",
   "advanced-accessory-system.config.name.chargeTime": "Total Charge Time",
   "advanced-accessory-system.config.comment.chargeTime": "Maximum charge time in ticks.",
   "advanced-accessory-system.config.name.openHeadShulkerHotkey": "Open Shulker Box Hat",
   "advanced-accessory-system.config.comment.openHeadShulkerHotkey": "Quickly open the shulker box on your head.",
   "advanced-accessory-system.config.name.openConfigGuiHotkey": "Open Config GUI",
   "advanced-accessory-system.config.comment.openConfigGuiHotkey": "Open the Advanced Accessory System config GUI.",
-  "advanced-accessory-system.config.name.toggleTargetEntityInBoatAutoPickUpHotkey": "Toggle Entity Boat Hat Compatibility",
-  "advanced-accessory-system.config.comment.toggleTargetEntityInBoatAutoPickUpHotkey": "Use dark magic to make the entity\u2019s butt compatible with boat hats.",
   "advanced-accessory-system.config.name.dismountPassengersHotkey": "Eject Passengers",
   "advanced-accessory-system.config.comment.dismountPassengersHotkey": "Literally.",
   "advanced-accessory-system.config.name.chargePassengerLaunchHotkey": "Charge",
@@ -35,7 +33,7 @@
   "key.advanced-accessory-system.openConfig": "Open Config",
   "key.advanced-accessory-system.openHeadShulker": "Open Head Shulker",
   "key.advanced-accessory-system.dismountPassengers": "Eject Passengers",
-  "key.advanced-accessory-system.chargePassengerLaunch": "Charge Launch"
+  "key.advanced-accessory-system.chargePassengerLaunch": "Charge Launch",
   "advanced-accessory-system.message.boatAutoPickUpAdded": "%s can now sit on boat hats.",
   "advanced-accessory-system.message.boatAutoPickUpRemoved": "%s can no longer sit on boat hats."
 }

@@ -24,8 +24,6 @@
   "advanced-accessory-system.config.comment.openHeadShulkerHotkey": "快捷地打开头顶的潜影盒，也可以让朋友帮你拿",
   "advanced-accessory-system.config.name.openConfigGuiHotkey": "打开配置界面",
   "advanced-accessory-system.config.comment.openConfigGuiHotkey": "打开 Advanced Accessory System 的奇异功能配置界面。",
-  "advanced-accessory-system.config.name.toggleTargetEntityInBoatAutoPickUpHotkey": "调整实体与船类帽子的兼容性",
-  "advanced-accessory-system.config.comment.toggleTargetEntityInBoatAutoPickUpHotkey": "对准星指向的实体使用黑魔法，使TA的屁股兼容船类帽子的特殊表面",
   "advanced-accessory-system.config.name.dismountPassengersHotkey": "扔出乘客",
   "advanced-accessory-system.config.comment.dismountPassengersHotkey": "字面意思",
   "advanced-accessory-system.config.name.chargePassengerLaunchHotkey": "蓄力",

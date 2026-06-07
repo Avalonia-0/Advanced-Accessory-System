@@ -24,8 +24,6 @@
   "advanced-accessory-system.config.comment.openHeadShulkerHotkey": "頭上のシュルカーボックスを素早く開きます",
   "advanced-accessory-system.config.name.openConfigGuiHotkey": "設定GUIを開く",
   "advanced-accessory-system.config.comment.openConfigGuiHotkey": "Advanced Accessory Systemの設定画面を開きます",
-  "advanced-accessory-system.config.name.toggleTargetEntityInBoatAutoPickUpHotkey": "エンティティとボート帽の互換性を切替",
-  "advanced-accessory-system.config.comment.toggleTargetEntityInBoatAutoPickUpHotkey": "照準の先のエンティティに黒魔法を使ってお尻をボート帽の特殊表面と互換させます",
   "advanced-accessory-system.config.name.dismountPassengersHotkey": "乗客を射出",
   "advanced-accessory-system.config.comment.dismountPassengersHotkey": "文字通り",
   "advanced-accessory-system.config.name.chargePassengerLaunchHotkey": "チャージ",
@@ -35,7 +33,7 @@
   "key.advanced-accessory-system.openConfig": "Open Config",
   "key.advanced-accessory-system.openHeadShulker": "Open Head Shulker",
   "key.advanced-accessory-system.dismountPassengers": "Eject Passengers",
-  "key.advanced-accessory-system.chargePassengerLaunch": "Charge Launch"
+  "key.advanced-accessory-system.chargePassengerLaunch": "Charge Launch",
   "advanced-accessory-system.message.boatAutoPickUpAdded": "%sはボート帽に乗れるようになりました",
   "advanced-accessory-system.message.boatAutoPickUpRemoved": "%sはボート帽に乗れなくなりました"
 }
