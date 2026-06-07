@@ -18,8 +18,9 @@ import java.util.function.Predicate;
  * resolution so repeated calls on tick-based hot paths incur zero
  * reflection lookup overhead.
  *
- * <p>Exceptions are logged at WARN level so silent failures are detectable
- * in the game log.
+ * <p>Method lookups use parameter-based resolution instead of name-based
+ * because the Trinkets jar may use intermediary mappings at runtime
+ * (e.g. {@code method_5438} instead of {@code getItem}).
  */
 public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
 
@@ -33,6 +34,33 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
     private static volatile Method cachedGetContainerSize;
     private static volatile Method cachedSetItem;
 
+    // ---- helper: find method by parameter/return type, ignoring name -----
+
+    /**
+     * Finds a method on the given class that matches the parameter types
+     * and return type. Unlike {@code getMethod(String, Class...)}, this
+     * works regardless of whether the runtime uses Mojang or intermediary
+     * method names.
+     */
+    private static Method findMethodByTypes(Class<?> clazz, Class<?> returnType, Class<?>... paramTypes) {
+        for (Method m : clazz.getMethods()) {
+            if (m.getReturnType() != returnType) continue;
+            Class<?>[] params = m.getParameterTypes();
+            if (params.length != paramTypes.length) continue;
+            boolean match = true;
+            for (int i = 0; i < params.length; i++) {
+                if (params[i] != paramTypes[i]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                return m;
+            }
+        }
+        return null;
+    }
+
     // ---- inventory access -------------------------------------------------
 
     @SuppressWarnings("unchecked")
@@ -40,6 +68,7 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
         try {
             if (cachedGetTrinketComponent == null) {
                 Class<?> apiClass = Class.forName("dev.emi.trinkets.api.TrinketsApi");
+                // TrinketsApi.getTrinketComponent(LivingEntity) -> Optional<TrinketComponent>
                 cachedGetTrinketComponent = apiClass.getMethod("getTrinketComponent", LivingEntity.class);
                 LOGGER.info("Cached TrinketsApi.getTrinketComponent method");
             }
@@ -48,6 +77,7 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
             if (opt.isPresent()) {
                 Object component = opt.get();
                 if (cachedGetInventory == null) {
+                    // TrinketComponent.getInventory() -> Map<String, Map<String, TrinketInventory>>
                     cachedGetInventory = component.getClass().getMethod("getInventory");
                     LOGGER.info("Cached TrinketComponent.getInventory method");
                 }
@@ -57,7 +87,6 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
             }
         } catch (Exception e) {
             LOGGER.warn("Failed to get Trinket inventory: {}", e.getMessage());
-            LOGGER.debug("Trinket inventory error details", e);
         }
         return Map.of();
     }
@@ -68,13 +97,11 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
             LOGGER.warn("Trinket inventory empty (no groups) for entity {}", entity);
             return null;
         }
-        LOGGER.info("Trinket inventory groups available: {}", inv.keySet());
         Map<String, Object> headInv = inv.get("head");
         if (headInv == null) {
-            LOGGER.warn("No 'head' group in Trinket inventory. Available: {}", inv.keySet());
+            LOGGER.warn("No 'head' group in Trinket inventory. Available groups: {}", inv.keySet());
             return null;
         }
-        LOGGER.info("Slots in 'head' group: {}", headInv.keySet());
         Object hatInv = headInv.get("hat");
         if (hatInv == null) {
             LOGGER.warn("No 'hat' slot in 'head' group. Available slots: {}", headInv.keySet());
@@ -90,12 +117,18 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
         if (hatInv == null) return ItemStack.EMPTY;
         try {
             if (cachedGetItem == null) {
-                cachedGetItem = hatInv.getClass().getMethod("getItem", int.class);
-                LOGGER.info("Cached TrinketInventory.getItem method");
+                cachedGetItem = findMethodByTypes(hatInv.getClass(), ItemStack.class, int.class);
+                if (cachedGetItem == null) {
+                    LOGGER.error("Could not find getItem(int) method on {}!", hatInv.getClass().getName());
+                    return ItemStack.EMPTY;
+                }
+                LOGGER.info("Cached method: {}.{} (resolved by types)",
+                        cachedGetItem.getDeclaringClass().getSimpleName(),
+                        cachedGetItem.getName());
             }
             ItemStack stack = (ItemStack) cachedGetItem.invoke(hatInv, 0);
             if (!stack.isEmpty()) {
-                LOGGER.debug("Found item in Trinkets hat slot: {}", stack.getItem());
+                LOGGER.info("Found item in Trinkets hat slot: {}", stack.getItem());
             }
             return stack;
         } catch (Exception e) {
@@ -110,8 +143,15 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
         if (hatInv == null) return;
         try {
             if (cachedSetItem == null) {
-                cachedSetItem = hatInv.getClass().getMethod("setItem", int.class, ItemStack.class);
-                LOGGER.info("Cached TrinketInventory.setItem method");
+                cachedSetItem = findMethodByTypes(hatInv.getClass(), void.class, int.class, ItemStack.class);
+                if (cachedSetItem == null) {
+                    LOGGER.error("Could not find setItem(int,ItemStack) method on {}!",
+                            hatInv.getClass().getName());
+                    return;
+                }
+                LOGGER.info("Cached method: {}.{} (resolved by types)",
+                        cachedSetItem.getDeclaringClass().getSimpleName(),
+                        cachedSetItem.getName());
             }
             cachedSetItem.invoke(hatInv, 0, stack);
         } catch (Exception e) {
@@ -125,14 +165,29 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
         if (hatInv == null) return false;
         try {
             if (cachedGetContainerSize == null) {
-                cachedGetContainerSize = hatInv.getClass().getMethod("getContainerSize");
-                LOGGER.info("Cached TrinketInventory.getContainerSize method");
+                cachedGetContainerSize = findMethodByTypes(hatInv.getClass(), int.class);
+                if (cachedGetContainerSize == null) {
+                    LOGGER.error("Could not find getContainerSize() method on {}!",
+                            hatInv.getClass().getName());
+                    return false;
+                }
+                LOGGER.info("Cached method: {}.{} (resolved by types)",
+                        cachedGetContainerSize.getDeclaringClass().getSimpleName(),
+                        cachedGetContainerSize.getName());
             }
             if (cachedGetItem == null) {
-                cachedGetItem = hatInv.getClass().getMethod("getItem", int.class);
+                cachedGetItem = findMethodByTypes(hatInv.getClass(), ItemStack.class, int.class);
+                if (cachedGetItem == null) {
+                    LOGGER.error("Could not find getItem(int) method!");
+                    return false;
+                }
             }
             if (cachedSetItem == null) {
-                cachedSetItem = hatInv.getClass().getMethod("setItem", int.class, ItemStack.class);
+                cachedSetItem = findMethodByTypes(hatInv.getClass(), void.class, int.class, ItemStack.class);
+                if (cachedSetItem == null) {
+                    LOGGER.error("Could not find setItem(int,ItemStack) method!");
+                    return false;
+                }
             }
             int size = (int) cachedGetContainerSize.invoke(hatInv);
             for (int i = 0; i < size; i++) {
