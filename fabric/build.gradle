@@ -10,6 +10,7 @@ repositories {
 
 dependencies {
     implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    implementation files(project(":common").sourceSets.client.output)
     modImplementation files(rootProject.file("libs/fabric-api-${rootProject.fabric_api_version}.jar"))
     modImplementation files(rootProject.file("libs/fabric-key-binding-api-v1-1.1.7.jar"))
     modImplementation files(rootProject.file("libs/architectury-fabric-${rootProject.architectury_version}.jar"))
@@ -36,8 +37,14 @@ processResources {
 
 jar {
     from project(":common").sourceSets.main.output
+    from project(":common").sourceSets.client.output
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     dependsOn(":common:jar")
+}
+
+// Ensure common client source set is compiled before fabric compiles
+tasks.compileJava {
+    dependsOn project(":common").tasks.named("compileClientJava")
 }
 
 sourcesJar {

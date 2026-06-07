@@ -19,7 +19,7 @@ public final class CommonBootstrap {
         AccessorySlotRegistry.register(new VanillaHeadSlotProvider());
         AccessorySlotRegistry.register(new TrinketsHatSlotProvider());
 
-        NetworkPayloadBootstrap.register();
+        NetworkPayloadBootstrap.registerCommon();
         PlatformLifecycle.registerCommon();
         HeadSlotBootstrap.registerCommon();
         ArmorVisibilityBootstrap.registerCommon();

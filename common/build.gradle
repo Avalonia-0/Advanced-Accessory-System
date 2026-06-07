@@ -2,6 +2,10 @@ architectury {
     common("fabric", "neoforge")
 }
 
+loom {
+    splitEnvironmentSourceSets()
+}
+
 dependencies {
     compileOnly "net.fabricmc:sponge-mixin:0.17.2+mixin.0.8.7"
     compileOnly files(rootProject.file("libs/architectury-${rootProject.architectury_version}-neoforge.jar"))

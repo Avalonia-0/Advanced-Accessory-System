@@ -19,6 +19,7 @@ neoForge {
     mods {
         advancedaccessorysystem {
             sourceSet sourceSets.main
+            sourceSet project(":common").sourceSets.client
         }
     }
 }
@@ -29,6 +30,7 @@ dependencies {
 
     // Common module classes (for compilation)
     implementation project(":common")
+    implementation files(project(":common").sourceSets.client.output)
 
     // Cloth Config API (runtime)
     implementation files(rootProject.file("libs/cloth-config-${rootProject.cloth_config_version}-neoforge.jar"))
@@ -52,8 +54,14 @@ processResources {
     }
 }
 
+// Ensure common client source set is compiled before neoforge compiles
+tasks.compileJava {
+    dependsOn project(":common").tasks.named("compileClientJava")
+}
+
 jar {
     // Include common module classes in the output
     from project(":common").sourceSets.main.output
+    from project(":common").sourceSets.client.output
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
