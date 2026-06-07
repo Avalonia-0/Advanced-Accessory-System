@@ -1,6 +1,7 @@
 package com.alonie.advancedaccessorysystem.mixin.rendering;
 
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.AccessorySlotRegistry;
+import com.alonie.advancedaccessorysystem.feature.accessory.slot.VanillaHeadSlotProvider;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,14 +40,22 @@ public class CosmeticHelmetMixin {
             return;
         }
 
-        // Find a HEAD-equippable item from any accessory provider
-        // (VanillaHeadSlotProvider, TrinketsHatSlotProvider, etc.).
-        // Only items with EQUIPPABLE component for HEAD qualify.
+        // Prefer items from non-vanilla providers (Trinkets hat slot, etc.)
+        // over the vanilla head slot for cosmetic display.
         ItemStack cosmetic = AccessorySlotRegistry.findFirst(entity,
                 stack -> {
                     Equippable e = stack.get(DataComponents.EQUIPPABLE);
                     return e != null && e.slot() == EquipmentSlot.HEAD;
-                });
+                }, VanillaHeadSlotProvider.NAME);
+
+        // Fall back to vanilla head slot if no cosmetic item exists
+        if (cosmetic.isEmpty()) {
+            cosmetic = AccessorySlotRegistry.findFirst(entity,
+                    stack -> {
+                        Equippable e = stack.get(DataComponents.EQUIPPABLE);
+                        return e != null && e.slot() == EquipmentSlot.HEAD;
+                    });
+        }
 
         if (!cosmetic.isEmpty()) {
             // Replace the rendered equipment with the cosmetic item.

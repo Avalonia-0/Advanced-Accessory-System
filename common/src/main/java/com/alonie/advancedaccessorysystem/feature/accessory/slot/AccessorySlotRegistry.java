@@ -56,6 +56,23 @@ public final class AccessorySlotRegistry {
     }
 
     /**
+     * Like {@link #findFirst} but skips the provider with the given
+     * {@code excludeProviderName}. Useful when a specific provider
+     * should be consulted only as a fallback.
+     */
+    public static ItemStack findFirst(LivingEntity entity, Predicate<ItemStack> predicate,
+                                       String excludeProviderName) {
+        for (AccessorySlotProvider provider : PROVIDERS) {
+            if (provider.name().equals(excludeProviderName)) continue;
+            ItemStack stack = provider.getStack(entity);
+            if (!stack.isEmpty() && predicate.test(stack)) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
      * Like {@link #findFirst} but also returns which provider matched.
      * Useful when callers need to write back to the same slot
      * (e.g. shulker box sessions).
