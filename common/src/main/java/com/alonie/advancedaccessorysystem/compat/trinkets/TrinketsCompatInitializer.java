@@ -35,8 +35,6 @@ public final class TrinketsCompatInitializer {
 
     private static final Identifier PREDICATE_ID = Identifier.fromNamespaceAndPath(
             AdvancedAccessorySystemMod.MOD_ID, "head_slot_compat");
-    private static final Identifier COSMETIC_PREDICATE_ID = Identifier.fromNamespaceAndPath(
-            AdvancedAccessorySystemMod.MOD_ID, "head_cosmetic");
 
     private TrinketsCompatInitializer() {
     }
@@ -58,11 +56,6 @@ public final class TrinketsCompatInitializer {
         //    The predicate ID is added to the head/hat slot's validator_predicates
         //    set via data/trinkets/slots/head/hat.json (merged by SlotLoader).
         registerPredicate();
-
-        // 3. Register predicate for cosmetic slot (head/cosmetic).
-        //    Items that naturally equip to HEAD (helmets, skulls, pumpkins)
-        //    can enter this slot for purely cosmetic display.
-        registerCosmeticPredicate();
     }
 
     // ---- predicate registration -------------------------------------------
@@ -95,6 +88,14 @@ public final class TrinketsCompatInitializer {
                 if (slotId == null || !slotId.startsWith("head/hat")) {
                     return triStateDefault;
                 }
+                // Accept items that naturally equip to HEAD (helmets, skulls, pumpkins)
+                net.minecraft.world.item.equipment.Equippable equippable =
+                        stack.get(net.minecraft.core.component.DataComponents.EQUIPPABLE);
+                if (equippable != null
+                        && equippable.slot() == net.minecraft.world.entity.EquipmentSlot.HEAD) {
+                    return triStateTrue;
+                }
+                // Accept custom accessories allowed by our head-slot mixin
                 if (AllItemsHeadEquippablePatch.shouldAllowManualHeadInsert(stack.getItem())) {
                     return triStateTrue;
                 }
@@ -113,57 +114,4 @@ public final class TrinketsCompatInitializer {
         }
     }
 
-    // ---- cosmetic slot predicate ------------------------------------------
-
-    /**
-     * Registers the {@code head_cosmetic} predicate that allows items
-     * naturally equippable to the HEAD slot (helmets, skulls, pumpkins)
-     * to enter the {@code head/cosmetic} Trinkets slot for display.
-     *
-     * <p>Custom accessories (boats, saddles, shulker boxes) have
-     * {@code getPreferredEquipmentSlot} returning MAINHAND/OFFHAND,
-     * so they are automatically excluded from this slot.
-     */
-    private static void registerCosmeticPredicate() {
-        try {
-            Class<?> apiClass = Class.forName("dev.emi.trinkets.api.TrinketsApi");
-            Class<?> triStateClass = Class.forName("net.fabricmc.fabric.api.util.TriState");
-            Object triStateDefault = triStateClass.getField("DEFAULT").get(null);
-            Object triStateTrue = triStateClass.getField("TRUE").get(null);
-
-            Class<?> function3Class = Class.forName("com.mojang.datafixers.util.Function3");
-            Method registerMethod = apiClass.getMethod(
-                    "registerTrinketPredicate", Identifier.class, function3Class);
-
-            InvocationHandler handler = (_proxy, method, args) -> {
-                if (!"apply".equals(method.getName())) {
-                    Class<?> retType = method.getReturnType();
-                    if (retType == boolean.class) return false;
-                    if (retType == int.class) return 0;
-                    return null;
-                }
-                net.minecraft.world.item.ItemStack stack = (net.minecraft.world.item.ItemStack) args[0];
-                // Check if the item naturally equips to HEAD via EQUIPPABLE component.
-                // Custom accessories (boat/saddle/shulker) don't have EQUIPPABLE
-                // for HEAD, so they're excluded automatically.
-                net.minecraft.world.item.equipment.Equippable equippable =
-                        stack.get(net.minecraft.core.component.DataComponents.EQUIPPABLE);
-                if (equippable != null
-                        && equippable.slot() == net.minecraft.world.entity.EquipmentSlot.HEAD) {
-                    return triStateTrue;
-                }
-                return triStateDefault;
-            };
-
-            Object proxy = Proxy.newProxyInstance(
-                    function3Class.getClassLoader(),
-                    new Class[]{function3Class},
-                    handler);
-
-            registerMethod.invoke(null, COSMETIC_PREDICATE_ID, proxy);
-            LOGGER.info("Registered Trinkets cosmetic predicate {}", COSMETIC_PREDICATE_ID);
-        } catch (Exception e) {
-            LOGGER.error("Failed to register Trinkets cosmetic predicate", e);
-        }
-    }
 }

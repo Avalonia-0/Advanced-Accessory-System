@@ -3,11 +3,13 @@ package com.alonie.advancedaccessorysystem.mixin.rendering;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.AccessorySlotRegistry;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.Equippable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -20,17 +22,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * {@code LivingEntityRenderState.headItem} during render state extraction,
  * so the vanilla {@code CustomHeadLayer} renders it on the player's head.
  *
- * <p>This ensures items placed in non-vanilla slots (Trinkets hat slot,
- * future cosmetic slots, etc.) are rendered on the player model using
- * the standard head-item pipeline — exactly as if they were in the
- * vanilla head equipment slot.
+ * <p>This ensures items placed in non-vanilla slots (Trinkets hat slot)
+ * are rendered on the player model using the standard head-item pipeline.
  *
- * <p>Items already in the vanilla head slot are skipped because they
- * are already handled by the vanilla pipeline (via {@code headItem},
- * {@code HumanoidArmorLayer}, or {@code CustomHeadLayer}).
- * The reference-identity check {@code accessory == entity.getItemBySlot(HEAD)}
- * prevents double-rendering: if the item found by the registry is the
- * same object as the vanilla head equipment, vanilla already handles it.
+ * <p>Items with an {@code EQUIPPABLE} component targeting the HEAD slot
+ * (helmets, skulls, pumpkins) are skipped — they are handled by
+ * {@code CosmeticHelmetMixin} which injects into {@code headEquipment}
+ * for armor-model rendering via {@code HumanoidArmorLayer}.
  */
 @Mixin(LivingEntityRenderer.class)
 public class HeadAccessoryTailMixin {
@@ -61,10 +59,16 @@ public class HeadAccessoryTailMixin {
             return;
         }
 
+        // Skip items that naturally equip to HEAD (helmets, skulls, pumpkins).
+        // These are handled by CosmeticHelmetMixin which renders them as
+        // armor models via HumanoidArmorLayer (headEquipment).
+        Equippable equippable = accessory.get(DataComponents.EQUIPPABLE);
+        if (equippable != null && equippable.slot() == EquipmentSlot.HEAD) {
+            return;
+        }
+
         // Reference-identity check: if the found item IS the vanilla head
-        // equipment object, then the vanilla pipeline already handles it
-        // (via headEquipment for armor or headItem for non-armor).
-        // Only inject items from OTHER providers (Trinkets, etc.).
+        // equipment object, then the vanilla pipeline already handles it.
         if (accessory == entity.getItemBySlot(EquipmentSlot.HEAD)) {
             return;
         }

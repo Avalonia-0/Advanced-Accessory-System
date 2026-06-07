@@ -4,7 +4,6 @@ import com.alonie.advancedaccessorysystem.bridge.PlatformLifecycle;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.AccessorySlotRegistry;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.TrinketsHatSlotProvider;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.VanillaHeadSlotProvider;
-import com.alonie.advancedaccessorysystem.feature.cosmetic.slot.CosmeticSlotProvider;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,7 +18,6 @@ public final class CommonBootstrap {
         // Accessory slot providers — registered first so features can query them.
         AccessorySlotRegistry.register(new VanillaHeadSlotProvider());
         AccessorySlotRegistry.register(new TrinketsHatSlotProvider());
-        AccessorySlotRegistry.register(new CosmeticSlotProvider());
 
         NetworkPayloadBootstrap.registerCommon();
         PlatformLifecycle.registerCommon();
