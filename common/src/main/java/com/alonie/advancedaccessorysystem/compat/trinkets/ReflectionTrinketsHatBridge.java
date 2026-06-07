@@ -65,17 +65,19 @@ public class ReflectionTrinketsHatBridge implements TrinketsHatBridge {
     private Object getHatInventory(LivingEntity entity) {
         Map<String, Map<String, Object>> inv = getInventory(entity);
         if (inv.isEmpty()) {
-            LOGGER.debug("Trinket inventory empty (no groups)");
+            LOGGER.warn("Trinket inventory empty (no groups) for entity {}", entity);
             return null;
         }
+        LOGGER.info("Trinket inventory groups available: {}", inv.keySet());
         Map<String, Object> headInv = inv.get("head");
         if (headInv == null) {
-            LOGGER.debug("No 'head' group in Trinket inventory");
+            LOGGER.warn("No 'head' group in Trinket inventory. Available: {}", inv.keySet());
             return null;
         }
+        LOGGER.info("Slots in 'head' group: {}", headInv.keySet());
         Object hatInv = headInv.get("hat");
         if (hatInv == null) {
-            LOGGER.debug("No 'hat' slot in 'head' group");
+            LOGGER.warn("No 'hat' slot in 'head' group. Available slots: {}", headInv.keySet());
         }
         return hatInv;
     }
