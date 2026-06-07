@@ -1,6 +1,7 @@
 package com.alonie.advancedaccessorysystem.mixin.rendering;
 
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.AccessorySlotRegistry;
+import com.alonie.advancedaccessorysystem.feature.accessory.slot.VanillaHeadSlotProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -18,17 +19,24 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Injects ANY non-empty item from any accessory provider into
- * {@code LivingEntityRenderState.headItem} during render state extraction,
- * so the vanilla {@code CustomHeadLayer} renders it on the player's head.
+ * Injects ANY non-empty custom accessory from any accessory provider into
+ * {@code LivingEntityRenderState.headItem}, so the vanilla {@code CustomHeadLayer}
+ * renders it on the player's head.
  *
- * <p>This ensures items placed in non-vanilla slots (Trinkets hat slot)
- * are rendered on the player model using the standard head-item pipeline.
+ * <p>Custom accessories (boats, blocks, saddles, shulker boxes) ALWAYS show
+ * regardless of what other slots contain, enabling multi-slot mixing:
+ * a vanilla helmet renders via {@code headEquipment} while a Trinkets
+ * boat renders via {@code headItem} — both visible simultaneously.
  *
- * <p>Items with an {@code EQUIPPABLE} component targeting the HEAD slot
- * (helmets, skulls, pumpkins) are skipped — they are handled by
- * {@code CosmeticHelmetMixin} which injects into {@code headEquipment}
- * for armor-model rendering via {@code HumanoidArmorLayer}.
+ * <p>Providers are queried in priority order:
+ * <ol>
+ *   <li>Non-vanilla providers (Trinkets hat slot, etc.) — custom accessories</li>
+ *   <li>Vanilla head slot — only if no non-vanilla item was found</li>
+ * </ol>
+ *
+ * <p>Items with {@code EQUIPPABLE→HEAD} (helmets, skulls, pumpkins) are
+ * skipped — they are handled by {@code CosmeticHelmetMixin} via
+ * {@code headEquipment}.
  */
 @Mixin(LivingEntityRenderer.class)
 public class HeadAccessoryTailMixin {
@@ -52,29 +60,33 @@ public class HeadAccessoryTailMixin {
             return;
         }
 
-        // Find ANY non-empty item across all accessory providers
+        // 1. Prefer custom accessories from non-vanilla providers.
+        //    These always render regardless of vanilla head slot contents.
         ItemStack accessory = AccessorySlotRegistry.findFirst(entity,
-                stack -> !stack.isEmpty());
+                stack -> !stack.isEmpty(), VanillaHeadSlotProvider.NAME);
+
+        // 2. Nothing from other providers — try vanilla head slot as fallback.
+        if (accessory.isEmpty()) {
+            accessory = AccessorySlotRegistry.findFirst(entity,
+                    stack -> !stack.isEmpty());
+            if (accessory == entity.getItemBySlot(EquipmentSlot.HEAD)) {
+                return; // vanilla already handles it via headEquipment/headItem
+            }
+        }
+
         if (accessory.isEmpty()) {
             return;
         }
 
         // Skip items that naturally equip to HEAD (helmets, skulls, pumpkins).
-        // These are handled by CosmeticHelmetMixin which renders them as
-        // armor models via HumanoidArmorLayer (headEquipment).
+        // These are handled by CosmeticHelmetMixin via headEquipment.
         Equippable equippable = accessory.get(DataComponents.EQUIPPABLE);
         if (equippable != null && equippable.slot() == EquipmentSlot.HEAD) {
             return;
         }
 
-        // Reference-identity check: if the found item IS the vanilla head
-        // equipment object, then the vanilla pipeline already handles it.
-        if (accessory == entity.getItemBySlot(EquipmentSlot.HEAD)) {
-            return;
-        }
-
-        // Resolve the accessory as a HEAD display item so CustomHeadLayer
-        // renders it with the standard head-item pipeline.
+        // Resolve the custom accessory as a HEAD display item.
+        // CustomHeadLayer will render it alongside any armor models.
         this.itemModelResolver.updateForLiving(
                 state.headItem,
                 accessory,
