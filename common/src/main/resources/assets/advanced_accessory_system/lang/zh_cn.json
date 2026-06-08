@@ -17,11 +17,5 @@
   "text.autoconfig.advanced_accessory_system.option.hideBoots": "靴子隐形",
   "text.autoconfig.advanced_accessory_system.option.hideBoots.@Tooltip": "使靴子隐形，词条仍然生效",
   "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius": "船类帽子吸引半径",
-  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "船类帽子允许接取实体的半径，与磁吸类似",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed": "基础速度",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed.@Tooltip": "扔出乘客时的速度",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue": "蓄力加速度大小",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue.@Tooltip": "蓄力时每tick累积的速度大小，单位是 格/tick^2",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime": "总蓄力时间",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime.@Tooltip": "最大蓄力时间，单位为tick"
+  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "船类帽子允许接取实体的半径，与磁吸类似"
 }

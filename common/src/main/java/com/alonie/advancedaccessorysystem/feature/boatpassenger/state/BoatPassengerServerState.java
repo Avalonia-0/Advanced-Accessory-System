@@ -10,7 +10,6 @@ public final class BoatPassengerServerState {
     private static String globalBoatAutoPickUpJson = BoatPassengerConfigHelper.DEFAULT_BOAT_AUTO_PICK_UP_JSON;
     private static String globalAddedBoatIdsJson = BoatPassengerConfigHelper.DEFAULT_ADDED_BOAT_IDS_JSON;
     private static String globalAddedSaddleIdsJson = BoatPassengerConfigHelper.DEFAULT_ADDED_SADDLE_IDS_JSON;
-    private static String globalChargeJson = BoatPassengerConfigHelper.DEFAULT_CHARGE_JSON;
 
     private BoatPassengerServerState() {
     }
@@ -53,21 +52,10 @@ public final class BoatPassengerServerState {
                 : json;
     }
 
-    public static String chargeJson() {
-        return globalChargeJson;
-    }
-
-    public static void setChargeJson(String json) {
-        globalChargeJson = json == null
-                ? BoatPassengerConfigHelper.DEFAULT_CHARGE_JSON
-                : json;
-    }
-
     public static void reset() {
         globalSettings = BoatPassengerSettingsState.DEFAULT;
         globalBoatAutoPickUpJson = BoatPassengerConfigHelper.DEFAULT_BOAT_AUTO_PICK_UP_JSON;
         globalAddedBoatIdsJson = BoatPassengerConfigHelper.DEFAULT_ADDED_BOAT_IDS_JSON;
         globalAddedSaddleIdsJson = BoatPassengerConfigHelper.DEFAULT_ADDED_SADDLE_IDS_JSON;
-        globalChargeJson = BoatPassengerConfigHelper.DEFAULT_CHARGE_JSON;
     }
 }

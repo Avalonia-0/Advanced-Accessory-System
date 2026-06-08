@@ -16,11 +16,5 @@
   "text.autoconfig.advanced_accessory_system.option.hideBoots": "Hide Boots Armour",
   "text.autoconfig.advanced_accessory_system.option.hideBoots.@Tooltip": "Makes boots armour invisible, attributes still apply.",
   "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius": "Boat Hat Attraction Radius",
-  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "Radius within which the boat hat attracts entities, like a magnet.",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed": "Base Speed",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed.@Tooltip": "Speed when ejecting passengers.",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue": "Charge Acceleration Value",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue.@Tooltip": "Speed accumulated per tick, in blocks/tick².",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime": "Total Charge Time",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime.@Tooltip": "Maximum charge time in ticks."
+  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "Radius within which the boat hat attracts entities, like a magnet."
 }

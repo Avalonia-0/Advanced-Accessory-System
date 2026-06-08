@@ -39,24 +39,8 @@ public class AccessoryConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public double boatPassengerAutoRideRadius = 2.0;
 
-    @ConfigEntry.Category("parameters")
-    @ConfigEntry.Gui.Tooltip
-    public double dismountPassengerLaunchSpeed = 0.8;
-
-    @ConfigEntry.Category("parameters")
-    @ConfigEntry.Gui.Tooltip
-    public double chargeIncreaseValue = 0.08;
-
-    @ConfigEntry.Category("parameters")
-    @ConfigEntry.BoundedDiscrete(min = 1, max = 200)
-    @ConfigEntry.Gui.Tooltip
-    public int chargeTime = 40;
-
     @Override
     public void validatePostLoad() throws ValidationException {
         if (boatPassengerAutoRideRadius < 0.0) boatPassengerAutoRideRadius = 2.0;
-        if (dismountPassengerLaunchSpeed < 0.0) dismountPassengerLaunchSpeed = 0.8;
-        if (chargeIncreaseValue < 0.0) chargeIncreaseValue = 0.08;
-        if (chargeTime < 1 || chargeTime > 200) chargeTime = 40;
     }
 }

@@ -1,6 +1,5 @@
 package com.alonie.advancedaccessorysystem.mixin.rendering;
 
-import com.alonie.advancedaccessorysystem.feature.accessory.client.render.BlockHeadRenderState;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.AccessorySlotRegistry;
 import com.alonie.advancedaccessorysystem.feature.accessory.slot.VanillaHeadSlotProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -9,7 +8,6 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
@@ -84,14 +82,6 @@ public class HeadAccessoryTailMixin {
         // These are handled by CosmeticHelmetMixin via headEquipment.
         Equippable equippable = accessory.get(DataComponents.EQUIPPABLE);
         if (equippable != null && equippable.slot() == EquipmentSlot.HEAD) {
-            return;
-        }
-
-        // BlockItems render as 3D block models on the head.
-        // Store the BlockState for the BlockHeadFeatureRenderer to pick up.
-        if (accessory.getItem() instanceof BlockItem blockItem) {
-            ((BlockHeadRenderState) state).aas$setHeadBlock(
-                    blockItem.getBlock().defaultBlockState());
             return;
         }
 

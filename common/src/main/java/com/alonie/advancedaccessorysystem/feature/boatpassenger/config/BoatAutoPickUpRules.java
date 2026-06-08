@@ -31,12 +31,6 @@ public final class BoatAutoPickUpRules {
         return rules;
     }
 
-    public static BoatAutoPickUpRules createDefaultChargeRules() {
-        BoatAutoPickUpRules rules = new BoatAutoPickUpRules();
-        rules.allowedPatterns.addAll(BoatPassengerConfigHelper.getDefaultChargeAllowedPatterns());
-        return rules;
-    }
-
     public static BoatAutoPickUpRules createDefaultAddedBoatRules() {
         BoatAutoPickUpRules rules = new BoatAutoPickUpRules();
         rules.allowedPatterns.addAll(BoatPassengerConfigHelper.getDefaultAddedBoatPatterns());
@@ -53,10 +47,6 @@ public final class BoatAutoPickUpRules {
         return parse(rawJson, BoatPassengerConfigHelper.getDefaultAutoPickUpAllowedPatterns());
     }
 
-    public static BoatAutoPickUpRules parseChargeRules(String rawJson) {
-        return parse(rawJson, BoatPassengerConfigHelper.getDefaultChargeAllowedPatterns());
-    }
-
     public static BoatAutoPickUpRules parse(String rawJson, Set<String> defaultAllowedPatterns) {
         if (rawJson == null || rawJson.isBlank()) {
             return create(defaultAllowedPatterns);
@@ -71,10 +61,6 @@ public final class BoatAutoPickUpRules {
 
     public static BoatAutoPickUpRules parse(JsonElement element) {
         return parse(element, BoatPassengerConfigHelper.getDefaultAutoPickUpAllowedPatterns());
-    }
-
-    public static BoatAutoPickUpRules parseChargeRules(JsonElement element) {
-        return parse(element, BoatPassengerConfigHelper.getDefaultChargeAllowedPatterns());
     }
 
     public static BoatAutoPickUpRules parse(JsonElement element, Set<String> defaultAllowedPatterns) {

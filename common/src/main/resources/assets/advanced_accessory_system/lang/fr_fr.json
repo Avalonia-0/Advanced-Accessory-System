@@ -17,11 +17,5 @@
   "text.autoconfig.advanced_accessory_system.option.hideBoots": "Bottes invisibles",
   "text.autoconfig.advanced_accessory_system.option.hideBoots.@Tooltip": "Rend les bottes invisibles, les attributs restent actifs.",
   "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius": "Rayon d’attraction du chapeau bateau",
-  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "Rayon dans lequel le chapeau bateau attire les entités (comme un aimant).",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed": "Vitesse de base",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed.@Tooltip": "Vitesse de lancement des passagers.",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue": "Accélération de charge",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue.@Tooltip": "Vitesse accumulée par tick (blocs/tick²)",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime": "Temps de charge total",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime.@Tooltip": "Temps de charge maximum en ticks."
+  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "Rayon dans lequel le chapeau bateau attire les entités (comme un aimant)."
 }

@@ -30,8 +30,7 @@ public final class BoatPassengerSettingsSyncManager {
         updateSettings(
                 player == null ? null : player.level().getServer(),
                 payload.radius(), payload.boatAutoPickUpJson(),
-                payload.addedBoatIdsJson(), payload.addedSaddleIdsJson(),
-                payload.dismountLaunchSpeed(), payload.chargeJson()
+                payload.addedBoatIdsJson(), payload.addedSaddleIdsJson()
         );
     }
 
@@ -48,13 +47,11 @@ public final class BoatPassengerSettingsSyncManager {
     }
 
     private static void updateSettings(MinecraftServer server, double radius, String boatAutoPickUpJson,
-                                        String addedBoatIdsJson, String addedSaddleIdsJson,
-                                        double dismountLaunchSpeed, String chargeJson) {
+                                        String addedBoatIdsJson, String addedSaddleIdsJson) {
         BoatPassengerServerState.setBoatAutoPickUpJson(boatAutoPickUpJson);
         BoatPassengerServerState.setAddedBoatIdsJson(addedBoatIdsJson);
         BoatPassengerServerState.setAddedSaddleIdsJson(addedSaddleIdsJson);
-        BoatPassengerServerState.setChargeJson(chargeJson);
-        BoatPassengerServerState.setSettings(BoatPassengerSettingsState.of(radius, BoatPassengerServerState.boatAutoPickUpJson(), dismountLaunchSpeed, BoatPassengerServerState.chargeJson()));
+        BoatPassengerServerState.setSettings(BoatPassengerSettingsState.of(radius, BoatPassengerServerState.boatAutoPickUpJson()));
         applyAccessoryPatterns(BoatPassengerServerState.addedBoatIdsJson(), BoatPassengerServerState.addedSaddleIdsJson());
 
         if (server != null) {
@@ -72,9 +69,7 @@ public final class BoatPassengerSettingsSyncManager {
                 BoatPassengerServerState.settings().radius(),
                 BoatPassengerServerState.boatAutoPickUpJson(),
                 BoatPassengerServerState.addedBoatIdsJson(),
-                BoatPassengerServerState.addedSaddleIdsJson(),
-                BoatPassengerServerState.settings().dismountLaunchSpeed(),
-                BoatPassengerServerState.chargeJson()
+                BoatPassengerServerState.addedSaddleIdsJson()
         ).write(buf);
         PlatformNetworking.sendToClient(BoatPassengerSettingsSyncPayload.ID, buf, player);
     }

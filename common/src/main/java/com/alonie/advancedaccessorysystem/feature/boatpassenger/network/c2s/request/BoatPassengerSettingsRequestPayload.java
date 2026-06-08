@@ -9,9 +9,7 @@ public record BoatPassengerSettingsRequestPayload(
         double radius,
         String boatAutoPickUpJson,
         String addedBoatIdsJson,
-        String addedSaddleIdsJson,
-        double dismountLaunchSpeed,
-        String chargeJson
+        String addedSaddleIdsJson
 ) {
     public static final Identifier ID = Identifier.fromNamespaceAndPath(
             AdvancedAccessorySystemMod.MOD_ID, "boat_passenger_settings_request");
@@ -27,10 +25,6 @@ public record BoatPassengerSettingsRequestPayload(
         buf.writeUtf(addedSaddleIdsJson() == null
                 ? BoatPassengerConfigHelper.DEFAULT_ADDED_SADDLE_IDS_JSON
                 : addedSaddleIdsJson());
-        buf.writeDouble(BoatPassengerConfigHelper.sanitizeDismountLaunchSpeed(dismountLaunchSpeed()));
-        buf.writeUtf(chargeJson() == null
-                ? BoatPassengerConfigHelper.DEFAULT_CHARGE_JSON
-                : chargeJson());
     }
 
     public static BoatPassengerSettingsRequestPayload read(FriendlyByteBuf buf) {
@@ -38,8 +32,6 @@ public record BoatPassengerSettingsRequestPayload(
                 buf.readDouble(),
                 buf.readUtf(),
                 buf.readUtf(),
-                buf.readUtf(),
-                buf.readDouble(),
                 buf.readUtf()
         );
     }

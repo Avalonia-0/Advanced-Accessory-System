@@ -17,11 +17,5 @@
   "text.autoconfig.advanced_accessory_system.option.hideBoots": "靴子隱形",
   "text.autoconfig.advanced_accessory_system.option.hideBoots.@Tooltip": "使靴子隱形，屬性仍然生效",
   "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius": "船類帽子吸引半徑",
-  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "船類帽子允許接取實體的半徑（如磁吸般）",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed": "基礎速度",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed.@Tooltip": "丟出乘客時的速度",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue": "蓄力加速度值",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue.@Tooltip": "蓄力時每tick累積的速度（格/tick²）",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime": "最大蓄力時間",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime.@Tooltip": "最大蓄力時間（tick）"
+  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "船類帽子允許接取實體的半徑（如磁吸般）"
 }

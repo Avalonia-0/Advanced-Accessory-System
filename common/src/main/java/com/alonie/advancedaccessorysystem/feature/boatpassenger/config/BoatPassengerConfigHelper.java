@@ -16,20 +16,11 @@ import java.util.regex.Pattern;
 
 public final class BoatPassengerConfigHelper {
     public static final double DEFAULT_AUTO_RIDE_RADIUS = 2.0D;
-    public static final double DEFAULT_DISMOUNT_LAUNCH_SPEED = 0.8D;
-    public static final double MIN_DISMOUNT_LAUNCH_SPEED = 0.0D;
-    public static final double MAX_DISMOUNT_LAUNCH_SPEED = 128.0D;
-    public static final double DEFAULT_CHARGE_INCREASE_VALUE = 0.08D;
-    public static final double MAX_CHARGE_INCREASE_VALUE = 1.0D;
-    public static final int DEFAULT_CHARGE_TIME = 40;
-    public static final int MAX_CHARGE_TIME = 200;
 
     private static final Map<String, Pattern> PATTERN_CACHE = new ConcurrentHashMap<>();
 
     public static final String DEFAULT_BOAT_AUTO_PICK_UP_JSON =
             "{\"allowed\":[\"minecraft:villager\",\"minecraft:player\",\"*_boat\",\"*_raft\",\"minecraft:minecart\",\"minecraft:tnt_minecart\",\"minecraft:tnt\",\"minecraft:end_crystal\",\"minecraft:falling_block\"],\"excluded\":{}}";
-    public static final String DEFAULT_CHARGE_JSON =
-            "{\"allowed\":[\"*_boat\",\"*_raft\",\"minecraft:minecart\",\"minecraft:tnt_minecart\",\"minecraft:tnt\",\"minecraft:end_crystal\",\"minecraft:falling_block\"],\"excluded\":{},\"increase_value\":0.08,\"charge_time\":40}";
     public static final String DEFAULT_ADDED_BOAT_IDS_JSON =
             "{\"allowed\":[\"*_boat\",\"*_raft\",\"minecraft:minecart\"],\"excluded\":{}}";
     public static final String DEFAULT_ADDED_SADDLE_IDS_JSON =
@@ -45,13 +36,6 @@ public final class BoatPassengerConfigHelper {
                     "minecraft:tnt_minecart",
                     "minecraft:tnt",
                     "minecraft:falling_block"
-            )));
-    private static final Set<String> DEFAULT_CHARGE_ALLOWED_PATTERNS =
-            Collections.unmodifiableSet(new LinkedHashSet<>(List.of(
-                    "minecraft:tnt_minecart",
-                    "minecraft:tnt",
-                    "minecraft:falling_block",
-                    "minecraft:creeper"
             )));
     private static final Set<String> DEFAULT_ADDED_BOAT_PATTERNS =
             Collections.unmodifiableSet(new LinkedHashSet<>(List.of(
@@ -72,28 +56,8 @@ public final class BoatPassengerConfigHelper {
         return Math.max(0.0D, radius);
     }
 
-    public static double sanitizeDismountLaunchSpeed(double speed) {
-        return clamp(speed, MIN_DISMOUNT_LAUNCH_SPEED, MAX_DISMOUNT_LAUNCH_SPEED);
-    }
-
-    public static double sanitizeChargeIncreaseValue(double value) {
-        return clamp(value, 0.0D, MAX_CHARGE_INCREASE_VALUE);
-    }
-
-    public static int sanitizeChargeTime(int value) {
-        return clamp(value, 0, MAX_CHARGE_TIME);
-    }
-
-    private static int clamp(int value, int min, int max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
     public static Set<String> getDefaultAutoPickUpAllowedPatterns() {
         return DEFAULT_AUTO_PICK_UP_ALLOWED_PATTERNS;
-    }
-
-    public static Set<String> getDefaultChargeAllowedPatterns() {
-        return DEFAULT_CHARGE_ALLOWED_PATTERNS;
     }
 
     public static Set<String> getDefaultAddedBoatPatterns() {
@@ -202,10 +166,6 @@ public final class BoatPassengerConfigHelper {
         } catch (JsonParseException ignored) {
             return true;
         }
-    }
-
-    private static double clamp(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));
     }
 
     private static String toRegex(String wildcardPattern) {

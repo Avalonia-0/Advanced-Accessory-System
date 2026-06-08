@@ -17,11 +17,5 @@
   "text.autoconfig.advanced_accessory_system.option.hideBoots": "Stiefel unsichtbar",
   "text.autoconfig.advanced_accessory_system.option.hideBoots.@Tooltip": "Macht die Stiefel unsichtbar, Eigenschaften bleiben wirksam.",
   "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius": "Bootshut-Aufnahmeradius",
-  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "Radius, in dem der Bootshut Entitäten anzieht (wie ein Magnet).",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed": "Basisgeschwindigkeit",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed.@Tooltip": "Geschwindigkeit beim Auswerfen von Passagieren.",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue": "Auflade-Beschleunigungswert",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue.@Tooltip": "Geschwindigkeitszunahme pro Tick beim Aufladen (Blöcke/Tick²)",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime": "Gesamte Aufladezeit",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime.@Tooltip": "Maximale Aufladezeit in Ticks."
+  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "Radius, in dem der Bootshut Entitäten anzieht (wie ein Magnet)."
 }

@@ -56,15 +56,11 @@ public final class BoatPassengerSettingsSyncClient {
         String boatAutoPickUpJson = BoatPassengerWhitelistConfig.getBoatAutoPickUpJson();
         String addedBoatIdsJson = BoatPassengerWhitelistConfig.getAddedBoatIdsJson();
         String addedSaddleIdsJson = BoatPassengerWhitelistConfig.getAddedSaddleIdsJson();
-        double dismountLaunchSpeed = 0.8D; // default dismount speed
-        String chargeJson = BoatPassengerWhitelistConfig.getChargeJson();
         if (!BoatPassengerSettingsClientState.shouldSend(
                 radius,
                 boatAutoPickUpJson,
                 addedBoatIdsJson,
-                addedSaddleIdsJson,
-                dismountLaunchSpeed,
-                chargeJson
+                addedSaddleIdsJson
         )) {
             return;
         }
@@ -74,27 +70,21 @@ public final class BoatPassengerSettingsSyncClient {
                 radius,
                 boatAutoPickUpJson,
                 addedBoatIdsJson,
-                addedSaddleIdsJson,
-                dismountLaunchSpeed,
-                chargeJson
+                addedSaddleIdsJson
         ).write(buf);
         PlatformNetworking.sendToServer(BoatPassengerSettingsRequestPayload.ID, buf);
         BoatPassengerSettingsClientState.recordSentState(
                 radius,
                 boatAutoPickUpJson,
                 addedBoatIdsJson,
-                addedSaddleIdsJson,
-                dismountLaunchSpeed,
-                chargeJson
+                addedSaddleIdsJson
         );
     }
 
     public static void handleSync(BoatPassengerSettingsSyncPayload payload) {
         BoatPassengerSettingsClientState.setCurrentSettings(BoatPassengerSettingsState.of(
                 payload.radius(),
-                payload.boatAutoPickUpJson(),
-                payload.dismountLaunchSpeed(),
-                payload.chargeJson()
+                payload.boatAutoPickUpJson()
         ));
         BoatPassengerSettingsClientState.setCurrentAddedBoatIdsJson(payload.addedBoatIdsJson());
         BoatPassengerSettingsClientState.setCurrentAddedSaddleIdsJson(payload.addedSaddleIdsJson());
@@ -104,9 +94,7 @@ public final class BoatPassengerSettingsSyncClient {
     private static BoatPassengerSettingsState createLocalSettings() {
         return BoatPassengerSettingsState.of(
                 AdvancedAccessorySystemConfigs.getBoatPassengerAutoRideRadius(),
-                BoatPassengerWhitelistConfig.getBoatAutoPickUpJson(),
-                0.8D,
-                BoatPassengerWhitelistConfig.getChargeJson()
+                BoatPassengerWhitelistConfig.getBoatAutoPickUpJson()
         );
     }
 

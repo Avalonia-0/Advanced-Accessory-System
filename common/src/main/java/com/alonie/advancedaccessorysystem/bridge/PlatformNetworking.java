@@ -14,23 +14,32 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
+/**
+ * Networking bridge backed by Architectury raw API (NeoForge compatible).
+ * C2S (client→server) packet registration only.
+ * S2C (server→client) registrations are in {@code PlatformNetworkingClient}.
+ */
 public final class PlatformNetworking {
     private PlatformNetworking() {
     }
 
+    /** Register C2S packet handlers (runs on both sides — server handles them). */
     public static void registerC2S() {
+        // -- C2S: Armor Visibility Update --
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, ArmorVisibilityUpdatePayload.ID,
                 (buf, ctx) -> {
                     ArmorVisibilityUpdatePayload p = ArmorVisibilityUpdatePayload.read(buf);
                     ctx.queue(() -> ArmorVisibilitySyncManager.handleUpdate((ServerPlayer) ctx.getPlayer(), p));
                 });
 
+        // -- C2S: Boat Passenger Settings Request --
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, BoatPassengerSettingsRequestPayload.ID,
                 (buf, ctx) -> {
                     BoatPassengerSettingsRequestPayload p = BoatPassengerSettingsRequestPayload.read(buf);
                     ctx.queue(() -> BoatPassengerSettingsSyncManager.handleRequest((ServerPlayer) ctx.getPlayer(), p));
                 });
 
+        // -- C2S: Open Head Shulker --
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, OpenHeadShulkerPayload.ID,
                 (buf, ctx) -> {
                     OpenHeadShulkerPayload p = OpenHeadShulkerPayload.read(buf);
@@ -38,19 +47,23 @@ public final class PlatformNetworking {
                 });
     }
 
+    /** Shared utility — create a buffer with registry access. */
     public static RegistryFriendlyByteBuf createBuffer(RegistryAccess registryAccess) {
         return new RegistryFriendlyByteBuf(Unpooled.buffer(), registryAccess);
     }
 
+    /** Send a packet from client to server. */
     public static void sendToServer(Identifier id, RegistryFriendlyByteBuf buf) {
         NetworkManager.sendToServer(id, buf);
     }
 
+    /** Send a packet from server to a specific client. */
     public static void sendToClient(Identifier id, RegistryFriendlyByteBuf buf, ServerPlayer player) {
         if (player == null) return;
         NetworkManager.sendToPlayer(player, id, buf);
     }
 
+    /** Broadcast a packet from server to all connected clients. */
     public static void sendToAllClients(Identifier id, RegistryFriendlyByteBuf buf, MinecraftServer server) {
         if (server == null) return;
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {

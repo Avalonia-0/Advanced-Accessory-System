@@ -17,11 +17,5 @@
   "text.autoconfig.advanced_accessory_system.option.hideBoots": "ブーツ透明化",
   "text.autoconfig.advanced_accessory_system.option.hideBoots.@Tooltip": "ブーツを透明化しますが、属性は維持されます",
   "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius": "ボート帽の吸引半径",
-  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "ボート帽がエンティティを引き寄せる範囲（磁石のように）",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed": "基本速度",
-  "text.autoconfig.advanced_accessory_system.option.dismountPassengerLaunchSpeed.@Tooltip": "乗客を射出する時の速度",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue": "チャージ加速度値",
-  "text.autoconfig.advanced_accessory_system.option.chargeIncreaseValue.@Tooltip": "チャージ中毎tick蓄積される速度（ブロック/tick²）",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime": "最大チャージ時間",
-  "text.autoconfig.advanced_accessory_system.option.chargeTime.@Tooltip": "最大チャージ時間（tick単位）"
+  "text.autoconfig.advanced_accessory_system.option.boatPassengerAutoRideRadius.@Tooltip": "ボート帽がエンティティを引き寄せる範囲（磁石のように）"
 }

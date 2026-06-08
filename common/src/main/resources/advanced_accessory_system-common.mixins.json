@@ -23,8 +23,6 @@
   "client": [
     "rendering.LivingEntityRendererMixin",
     "rendering.HeadAccessoryTailMixin",
-    "rendering.CosmeticHelmetMixin",
-    "rendering.LivingEntityRenderStateBlockMixin",
-    "rendering.BlockHeadLayerRegistrationMixin"
+    "rendering.CosmeticHelmetMixin"
   ]
 }

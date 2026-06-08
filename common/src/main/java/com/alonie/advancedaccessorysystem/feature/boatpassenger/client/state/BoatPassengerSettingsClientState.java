@@ -13,8 +13,6 @@ public final class BoatPassengerSettingsClientState {
     private static String lastSentBoatAutoPickUpJson;
     private static String lastSentAddedBoatIdsJson;
     private static String lastSentAddedSaddleIdsJson;
-    private static double lastSentDismountLaunchSpeed = Double.NaN;
-    private static String lastSentChargeJson;
     private static boolean localStateDirty = true;
 
     private static BoatPassengerSettingsState currentSettings = BoatPassengerSettingsState.DEFAULT;
@@ -23,8 +21,6 @@ public final class BoatPassengerSettingsClientState {
 
     private BoatPassengerSettingsClientState() {
     }
-
-
 
     public static BoatPassengerSettingsState currentSettings() {
         return currentSettings;
@@ -62,33 +58,25 @@ public final class BoatPassengerSettingsClientState {
             double radius,
             String boatAutoPickUpJson,
             String addedBoatIdsJson,
-            String addedSaddleIdsJson,
-            double dismountLaunchSpeed,
-            String chargeJson
+            String addedSaddleIdsJson
     ) {
         return localStateDirty
                 || Double.compare(radius, lastSentRadius) != 0
                 || !Objects.equals(boatAutoPickUpJson, lastSentBoatAutoPickUpJson)
                 || !Objects.equals(addedBoatIdsJson, lastSentAddedBoatIdsJson)
-                || !Objects.equals(addedSaddleIdsJson, lastSentAddedSaddleIdsJson)
-                || Double.compare(dismountLaunchSpeed, lastSentDismountLaunchSpeed) != 0
-                || !Objects.equals(chargeJson, lastSentChargeJson);
+                || !Objects.equals(addedSaddleIdsJson, lastSentAddedSaddleIdsJson);
     }
 
     public static void recordSentState(
             double radius,
             String boatAutoPickUpJson,
             String addedBoatIdsJson,
-            String addedSaddleIdsJson,
-            double dismountLaunchSpeed,
-            String chargeJson
+            String addedSaddleIdsJson
     ) {
         lastSentRadius = radius;
         lastSentBoatAutoPickUpJson = boatAutoPickUpJson;
         lastSentAddedBoatIdsJson = addedBoatIdsJson;
         lastSentAddedSaddleIdsJson = addedSaddleIdsJson;
-        lastSentDismountLaunchSpeed = dismountLaunchSpeed;
-        lastSentChargeJson = chargeJson;
         localStateDirty = false;
     }
 
@@ -97,8 +85,6 @@ public final class BoatPassengerSettingsClientState {
         lastSentBoatAutoPickUpJson = null;
         lastSentAddedBoatIdsJson = null;
         lastSentAddedSaddleIdsJson = null;
-        lastSentDismountLaunchSpeed = Double.NaN;
-        lastSentChargeJson = null;
         localStateDirty = true;
         currentSettings = BoatPassengerSettingsState.DEFAULT;
         currentAddedBoatIdsJson = BoatPassengerConfigHelper.DEFAULT_ADDED_BOAT_IDS_JSON;

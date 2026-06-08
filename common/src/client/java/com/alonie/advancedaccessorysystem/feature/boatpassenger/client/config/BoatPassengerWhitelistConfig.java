@@ -6,7 +6,6 @@ import com.alonie.advancedaccessorysystem.client.config.AdvancedAccessorySystemC
 import com.alonie.advancedaccessorysystem.feature.boatpassenger.client.sync.BoatPassengerSettingsSyncClient;
 import com.alonie.advancedaccessorysystem.feature.boatpassenger.config.BoatAutoPickUpRules;
 import com.alonie.advancedaccessorysystem.feature.boatpassenger.config.BoatPassengerConfigHelper;
-import com.alonie.advancedaccessorysystem.feature.boatpassenger.config.ChargeConfigData;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -32,7 +31,6 @@ public final class BoatPassengerWhitelistConfig {
             .create();
 
     private static final String AUTO_PICK_UP_KEY = "AAS_boat_auto_pick_up";
-    private static final String CHARGE_KEY = "charge";
     private static final String LEGACY_ENTITY_IDS_KEY = "AAS_boat_auto_ride";
     private static final String LEGACY_OLDER_ENTITY_IDS_KEY = "head_boat_allow_ride";
     private static final String ADDED_BOAT_IDS_KEY = "AAS_boat";
@@ -46,11 +44,9 @@ public final class BoatPassengerWhitelistConfig {
             .resolve("AdvancedAccessorySystem.json");
 
     private static BoatAutoPickUpRules autoPickUpRules = BoatAutoPickUpRules.createDefault();
-    private static ChargeConfigData chargeConfig = ChargeConfigData.DEFAULT;
     private static BoatAutoPickUpRules addedBoatRules = BoatAutoPickUpRules.createDefaultAddedBoatRules();
     private static BoatAutoPickUpRules addedSaddleRules = BoatAutoPickUpRules.createDefaultAddedSaddleRules();
     private static String autoPickUpJson = BoatPassengerConfigHelper.DEFAULT_BOAT_AUTO_PICK_UP_JSON;
-    private static String chargeJson = BoatPassengerConfigHelper.DEFAULT_CHARGE_JSON;
     private static String addedBoatIdsJson = BoatPassengerConfigHelper.DEFAULT_ADDED_BOAT_IDS_JSON;
     private static String addedSaddleIdsJson = BoatPassengerConfigHelper.DEFAULT_ADDED_SADDLE_IDS_JSON;
     private static FileTime lastKnownModifiedTime;
@@ -76,22 +72,6 @@ public final class BoatPassengerWhitelistConfig {
     public static String getBoatAutoPickUpJson() {
         init();
         return autoPickUpJson;
-    }
-
-    public static String getChargeJson() {
-        init();
-        return chargeJson;
-    }
-
-    public static ChargeConfigData getChargeConfig() {
-        init();
-        return chargeConfig;
-    }
-
-    public static void updateChargeConfigValues(double increaseValue, int chargeTime) {
-        init();
-        chargeConfig = chargeConfig.withValues(increaseValue, chargeTime);
-        chargeJson = chargeConfig.toJsonString();
     }
 
     public static String getAddedBoatIdsJson() {
@@ -139,7 +119,6 @@ public final class BoatPassengerWhitelistConfig {
         rootObject.remove(LEGACY_ADDED_BOAT_IDS_KEY);
         rootObject.remove(LEGACY_ADDED_SADDLE_IDS_KEY);
         rootObject.add(AUTO_PICK_UP_KEY, autoPickUpRules.toJsonObject());
-        rootObject.add(CHARGE_KEY, chargeConfig.toJsonObject());
         rootObject.add(ADDED_BOAT_IDS_KEY, addedBoatRules.toJsonObject());
         rootObject.add(ADDED_SADDLE_IDS_KEY, addedSaddleRules.toJsonObject());
     }
@@ -163,7 +142,6 @@ public final class BoatPassengerWhitelistConfig {
 
     private static void loadOrCreate(boolean notifyOnChange) {
         String previousAutoPickUpJson = autoPickUpJson;
-        String previousChargeJson = chargeJson;
         String previousAddedBoatIdsJson = addedBoatIdsJson;
         String previousAddedSaddleIdsJson = addedSaddleIdsJson;
 
@@ -185,7 +163,6 @@ public final class BoatPassengerWhitelistConfig {
 
         JsonElement mainAutoPickUpElement = getAutoPickUpElement(mainRootObject);
         JsonElement legacyAutoPickUpElement = getAutoPickUpElement(legacyRootObject);
-        JsonElement mainChargeElement = getChargeElement(mainRootObject);
         JsonElement mainAddedBoatElement = getAddedBoatIdsElement(mainRootObject);
         JsonElement mainAddedSaddleElement = getAddedSaddleIdsElement(mainRootObject);
 
@@ -194,9 +171,6 @@ public final class BoatPassengerWhitelistConfig {
                 : legacyAutoPickUpElement != null
                 ? legacyAutoPickUpElement.toString()
                 : BoatPassengerConfigHelper.DEFAULT_BOAT_AUTO_PICK_UP_JSON;
-        String rawChargeJson = mainChargeElement != null
-                ? mainChargeElement.toString()
-                : BoatPassengerConfigHelper.DEFAULT_CHARGE_JSON;
         String rawAddedBoatIdsJson = mainAddedBoatElement != null
                 ? mainAddedBoatElement.toString()
                 : BoatPassengerConfigHelper.DEFAULT_ADDED_BOAT_IDS_JSON;
@@ -209,14 +183,12 @@ public final class BoatPassengerWhitelistConfig {
         applyAddedSaddlePatterns(BoatPassengerConfigHelper.parseAddedSaddlePatterns(rawAddedSaddleIdsJson));
 
         boolean rewriteSanitizedConfig = !Objects.equals(rawAutoPickUpJson, autoPickUpJson)
-                || !Objects.equals(rawChargeJson, chargeJson)
                 || !Objects.equals(rawAddedBoatIdsJson, addedBoatIdsJson)
                 || !Objects.equals(rawAddedSaddleIdsJson, addedSaddleIdsJson);
         boolean shouldWriteMainConfig = migratedFromLegacy
                 || rewriteSanitizedConfig
                 || mainRootObject == null
                 || !containsPrimaryAutoPickUp(mainRootObject)
-                || !containsPrimaryCharge(mainRootObject)
                 || !containsPrimaryAddedBoatIds(mainRootObject)
                 || !containsPrimaryAddedSaddleIds(mainRootObject)
                 || containsLegacyKeys(mainRootObject);
@@ -232,7 +204,6 @@ public final class BoatPassengerWhitelistConfig {
 
         notifyIfChanged(
                 previousAutoPickUpJson,
-                previousChargeJson,
                 previousAddedBoatIdsJson,
                 previousAddedSaddleIdsJson,
                 notifyOnChange
@@ -277,14 +248,12 @@ public final class BoatPassengerWhitelistConfig {
 
     private static void notifyIfChanged(
             String previousAutoPickUpJson,
-            String previousChargeJson,
             String previousAddedBoatIdsJson,
             String previousAddedSaddleIdsJson,
             boolean notifyOnChange
     ) {
         if (notifyOnChange
                 && (!Objects.equals(previousAutoPickUpJson, autoPickUpJson)
-                || !Objects.equals(previousChargeJson, chargeJson)
                 || !Objects.equals(previousAddedBoatIdsJson, addedBoatIdsJson)
                 || !Objects.equals(previousAddedSaddleIdsJson, addedSaddleIdsJson))) {
             BoatPassengerSettingsSyncClient.onLocalConfigChanged();
@@ -378,10 +347,6 @@ public final class BoatPassengerWhitelistConfig {
         return rootObject != null && rootObject.get(AUTO_PICK_UP_KEY) instanceof JsonObject;
     }
 
-    private static boolean containsPrimaryCharge(JsonObject rootObject) {
-        return rootObject != null && rootObject.get(CHARGE_KEY) instanceof JsonObject;
-    }
-
     private static boolean containsPrimaryAddedBoatIds(JsonObject rootObject) {
         return rootObject != null && (rootObject.get(ADDED_BOAT_IDS_KEY) instanceof JsonObject
                 || rootObject.get(ADDED_BOAT_IDS_KEY) instanceof JsonArray);
@@ -414,10 +379,6 @@ public final class BoatPassengerWhitelistConfig {
         }
 
         return rootObject.get(LEGACY_OLDER_ENTITY_IDS_KEY) instanceof JsonArray jsonArray ? jsonArray : null;
-    }
-
-    private static JsonElement getChargeElement(JsonObject rootObject) {
-        return rootObject != null && rootObject.get(CHARGE_KEY) instanceof JsonObject jsonObject ? jsonObject : null;
     }
 
     private static JsonElement getAddedBoatIdsElement(JsonObject rootObject) {
